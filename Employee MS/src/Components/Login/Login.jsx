@@ -1,39 +1,45 @@
 import { React, useState } from 'react';
-import axios from 'axios'
+import axios from '../../utils/axiosConfig.js'
 import './Login.scss'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+    const navigate = useNavigate();
     const [inputLogin, setInputLogin] = useState({
         email: '',
         password: ''
     })
-
-    const handleLogin = async(event) =>{
+    const [error, setError] = useState('');
+    const handleLogin = async (event) => {
         event.preventDefault();
         try {
-            let results = await axios.post('http://localhost:3000/login', inputLogin);
-            console.log(results);
+            let results = await axios.post('http://localhost:3000/auth/login', inputLogin);
+            if (results && results.status === 200) {
+                navigate('/dashboard')
+            }
         } catch (error) {
-            console.log("Login error", error)
+            let errorMS = error.response.data;
+                setError(errorMS);
         }
     }
     return (
         <div className='d-flex justify-content-center align-items-center vh-100 loginPage'>
             <div className='p-3 w-25 border rounded loginForm'>
+                <p className='text-danger'>{error}</p>
                 <h2>Login Page</h2>
                 <form onSubmit={(event) => handleLogin(event)}>
                     <div className="form-group mb-2">
                         <label htmlFor="email"><strong>Email: </strong></label>
-                        <input type="email" className="form-control" id="email" 
-                        placeholder="Email" autoComplete='on'
-                        onChange={(event) => setInputLogin({...inputLogin, email: event.target.value})}
+                        <input type="email" className="form-control" id="email"
+                            placeholder="Email" autoComplete='on'
+                            onChange={(event) => setInputLogin({ ...inputLogin, email: event.target.value })}
                         ></input>
                     </div>
                     <div className="form-group mb-2">
                         <label htmlFor="password">Password: </label>
-                        <input type="password" className="form-control" id="password" 
-                        placeholder="Password" autoComplete='on'
-                        onChange={(event) => setInputLogin({...inputLogin, password: event.target.value})}
+                        <input type="password" className="form-control" id="password"
+                            placeholder="Password" autoComplete='on'
+                            onChange={(event) => setInputLogin({ ...inputLogin, password: event.target.value })}
                         ></input>
                     </div>
                     <div className="mb-1">

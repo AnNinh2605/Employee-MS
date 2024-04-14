@@ -16,11 +16,11 @@ const login = async (req, res) => {
                 return res.status(200).send("Login successful");
             }
             else {
-                return res.send("Email/ password is not correct");
+                return res.status(401).send("Email/ password is not correct");
             }
         }
         else {
-            return res.send("Email is not existing");
+            return res.status(401).send("Email is not existing");
         }
     } catch (error) {
         console.log("Login error", error);
