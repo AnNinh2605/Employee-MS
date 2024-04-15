@@ -10,8 +10,7 @@ const port = 3000
 
 app.use(cors({
     origin: "http://localhost:5173",
-    methods: ['GET', 'PUT', 'POST'],
-    preflightContinue: true,
+    methods: 'GET,PUT,POST',
     credentials: true
 }))
 

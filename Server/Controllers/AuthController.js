@@ -13,18 +13,76 @@ const login = async (req, res) => {
                 }
                 let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
                 res.cookie('jwt_token', token , { expires: new Date(Date.now() + 900000), httpOnly: true })
-                return res.status(200).send("Login successful");
+                return res.status(200).json({
+                    status: "success",
+                    message: "Login successful",
+                    data: {
+                        ...payload,
+                        access_token: token
+                    }
+                });
             }
             else {
-                return res.status(401).send("Email/ password is not correct");
+                return res.status(401).json({
+                    status: "error",
+                    message: "Email/ password is not correct",
+                });
             }
         }
         else {
-            return res.status(401).send("Email is not existing");
+            return res.status(401).json({
+                status: "error",
+                message: "Email is not existing",
+            });
         }
     } catch (error) {
         console.log("Login error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
     }
 }
-const AuthController = { login }
+
+const addCategory = (req, res) => {
+    try {
+        console.log(req.body);
+        return res.status(201).json({
+            status: "success",
+            message: "Create category successful",
+        });
+    } catch (error) {
+        console.log("Login error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const fetchCategory = (req, res) => {
+    try {
+        res.status(200).send('Ok');
+    } catch (error) {
+        console.log("Login error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const AuthController = { login, addCategory, fetchCategory }
 export default AuthController;

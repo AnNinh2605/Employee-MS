@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import axios from '../../utils/axiosConfig.js'
+import axios from 'axios'
 import './Login.scss'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,7 +9,9 @@ const Login = () => {
         email: '',
         password: ''
     })
-    const [error, setError] = useState('');
+
+    const [error, setError] = useState(null)
+
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
@@ -18,14 +20,14 @@ const Login = () => {
                 navigate('/dashboard')
             }
         } catch (error) {
-            let errorMS = error.response.data;
+            let errorMS = error.response.data.message;
                 setError(errorMS);
         }
     }
     return (
         <div className='d-flex justify-content-center align-items-center vh-100 loginPage'>
             <div className='p-3 w-25 border rounded loginForm'>
-                <p className='text-danger'>{error}</p>
+                <div className='text-warning'>{error && error}</div>
                 <h2>Login Page</h2>
                 <form onSubmit={(event) => handleLogin(event)}>
                     <div className="form-group mb-2">
