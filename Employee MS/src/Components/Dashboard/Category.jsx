@@ -10,8 +10,8 @@ const Category = () => {
             let data = results.data.data
             setCategory(data);
         }
-        else{
-            alert("")
+        else {
+            alert("Fetch category error");
         }
     }
     useEffect(() => {
@@ -38,7 +38,7 @@ const Category = () => {
                         {category.map((item, index) => {
                             return (
                                 <tr key={`category-${index}`}>
-                                    <td>{index}</td>
+                                    <td>{index + 1}</td>
                                     <td>{item.name}</td>
                                 </tr>
                             )
