@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 const AddCategory = () => {
     const navigate = useNavigate();
     const [category, setCategory] = useState();
-    const handleAddCategory = async(event) => {
+    const handleAddCategory = async (event) => {
         event.preventDefault();
         try {
-            let results = await axios.post('http://localhost:3000/auth/addCategory', {category});
-            console.log(results);
-            if (results && results.status===201){
+            let results = await axios.post('http://localhost:3000/auth/addCategory', { category });
+            if (results && results.status === 201) {
                 navigate('/dashboard/category');
             }
         } catch (error) {
+            alert("Add category error");
             console.log("Add category error", error)
         }
     }
@@ -28,7 +28,7 @@ const AddCategory = () => {
                             placeholder="Category" autoComplete='on'
                             onChange={event => setCategory(event.target.value)}
                         ></input>
-                    </div>  
+                    </div>
                     <button type="submit" className="btn btn-success w-100">Submit</button>
                 </form>
             </div>

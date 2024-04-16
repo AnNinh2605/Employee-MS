@@ -1,4 +1,5 @@
-import UserModel from '../Models/userModels.js';
+import UserModel from '../Models/UserModel.js';
+import CategoryModel from '../Models/CategoryModel.js';
 import jwt from 'jsonwebtoken';
 
 const login = async (req, res) => {
@@ -12,7 +13,7 @@ const login = async (req, res) => {
                     email: findEmail[0].email
                 }
                 let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
-                res.cookie('jwt_token', token , { expires: new Date(Date.now() + 900000), httpOnly: true })
+                res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
                 return res.status(200).json({
                     status: "success",
                     message: "Login successful",
@@ -48,15 +49,18 @@ const login = async (req, res) => {
     }
 }
 
-const addCategory = (req, res) => {
+const addCategory = async (req, res) => {
     try {
-        console.log(req.body);
+        let { category } = req.body;
+        await CategoryModel.create({
+            name: category
+        });
         return res.status(201).json({
             status: "success",
             message: "Create category successful",
         });
     } catch (error) {
-        console.log("Login error", error);
+        console.log("Add category error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -68,9 +72,14 @@ const addCategory = (req, res) => {
     }
 }
 
-const fetchCategory = (req, res) => {
+const fetchCategory = async (req, res) => {
     try {
-        res.status(200).send('Ok');
+        let results = await CategoryModel.find();
+        return res.status(200).json({
+            status: "success",
+            message: "Get category successful",
+            data: results
+        })
     } catch (error) {
         console.log("Login error", error);
         return res.status(500).json({
