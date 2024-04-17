@@ -53,6 +53,26 @@ const login = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        res.clearCookie("jwt_token");
+        return res.status(204).json({
+            status: "success",
+            message: "Logout successful",
+        });
+    } catch (error) {
+        console.log("Login error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
 const addCategory = async (req, res) => {
     try {
         let { category } = req.body;
@@ -315,6 +335,7 @@ const getListAdmin = async (req, res) => {
 
 const AuthController = {
     login,
+    logout,
     addCategory,
     fetchCategory,
     addEmployee,

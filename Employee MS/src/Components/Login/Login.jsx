@@ -17,11 +17,12 @@ const Login = () => {
         try {
             let results = await axios.post('http://localhost:3000/auth/login', inputLogin);
             if (results && results.status === 200) {
+                localStorage.setItem("access_token", results.data.data.access_token);
                 navigate('/dashboard')
             }
         } catch (error) {
             let errorMS = error.response.data.message;
-                setError(errorMS);
+            setError(errorMS);
         }
     }
     return (

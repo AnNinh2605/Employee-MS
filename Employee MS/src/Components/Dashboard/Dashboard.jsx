@@ -4,18 +4,18 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import axios from "axios";
 
 const Dashboard = () => {
-    const anvigate = useNavigate()
-    axios.defaults.withCredentials = true
-    const handleLogout = () => {
-      axios.get('http://localhost:3000/auth/logout')
-      .then(result => {
-        if(result.data.Status) { 
-          localStorage.removeItem("valid")
-          anvigate('/')
-        }
-      })
-    }
+    const navigate = useNavigate()
 
+    const handleLogout = async () => {
+        let results = await axios.post('http://localhost:3000/auth/logout');
+        if (results && results.status === 204) {
+            localStorage.removeItem("access_token");
+            navigate('/login');
+        }
+        else {
+            alert("Get salaryTotal error");
+        }
+    }
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
@@ -71,7 +71,7 @@ const Dashboard = () => {
                                     <span className="ms-2 d-none d-sm-inline">Profile</span>
                                 </Link>
                             </li>
-                            <li className="w-100" onClick={handleLogout}>
+                            <li className="w-100" onClick={() => handleLogout()}>
                                 <Link
                                     className="nav-link px-0 align-middle text-white"
                                 >
