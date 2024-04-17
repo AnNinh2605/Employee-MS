@@ -130,7 +130,7 @@ const addEmployee = async (req, res) => {
 
 const fetchEmployee = async (req, res) => {
     try {
-        let results = await EmployeeModel.find();
+        let results = await EmployeeModel.find({}, '-password');
         return res.status(200).json({
             status: "success",
             message: "Get employee successful",
@@ -148,5 +148,58 @@ const fetchEmployee = async (req, res) => {
         });
     }
 }
-const AuthController = { login, addCategory, fetchCategory, addEmployee, fetchEmployee }
+
+const fetchEmployeeById = async (req, res) => {
+    let _id = req.params._id;
+    try {
+        let results = await EmployeeModel.findById(_id, '-password -image');
+        return res.status(200).json({
+            status: "success",
+            message: "Get employee successful",
+            data: results
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const editEmployee = async (req, res) => {
+    let { name, email, salary, address, category_id } = req.body
+    let _id = req.params._id;
+    try {
+        await EmployeeModel.updateOne({ _id: _id },
+            {
+                name,
+                email,
+                salary,
+                address,
+                category_id,
+            }
+        );
+        return res.status(204).json({
+            status: "success",
+            message: "Update employee successful",
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const AuthController = { login, addCategory, fetchCategory, addEmployee, fetchEmployee, fetchEmployeeById, editEmployee }
 export default AuthController;

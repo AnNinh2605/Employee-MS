@@ -12,4 +12,7 @@ router.get('/category', AuthController.fetchCategory)
 router.post('/addEmployee', upload.single('image'), AuthController.addEmployee)
 router.get('/employee', AuthController.fetchEmployee)
 
+router.get('/employee/:_id', AuthController.fetchEmployeeById)
+router.put('/editEmployee/:_id', AuthController.editEmployee)
+
 export default router
