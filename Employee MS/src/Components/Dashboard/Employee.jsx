@@ -15,7 +15,15 @@ const Employee = () => {
             alert("Fetch employee error");
         }
     }
-
+    const handleDeleteEmployee = async (_id) => {
+        let results = await axios.delete(`http://localhost:3000/auth/deleteEmployee/${_id}`);
+        if (results && results.status === 204) {
+            window.location.reload();
+        }
+        else {
+            alert("Fetch employee error");
+        }
+    }
     useEffect(() => {
         fetchEmployee();
     }, [])
@@ -53,7 +61,7 @@ const Employee = () => {
                                     <td>{item.salary}</td>
                                     <td>
                                         <Link to={`/dashboard/edit_employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
-                                        <Link className='btn btn-danger btn-sm'>Delete</Link>
+                                        <button className='btn btn-danger btn-sm' onClick={() => handleDeleteEmployee(item._id)}>Delete</button>
                                     </td>
                                 </tr>
                             )

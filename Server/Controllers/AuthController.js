@@ -201,5 +201,26 @@ const editEmployee = async (req, res) => {
     }
 }
 
-const AuthController = { login, addCategory, fetchCategory, addEmployee, fetchEmployee, fetchEmployeeById, editEmployee }
+const deleteEmployee = async (req, res) => {
+    let _id = req.params._id;
+    try {
+        await EmployeeModel.deleteOne({ _id: _id });
+        return res.status(204).json({
+            status: "success",
+            message: "Delete employee successful",
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const AuthController = { login, addCategory, fetchCategory, addEmployee, fetchEmployee, fetchEmployeeById, editEmployee, deleteEmployee }
 export default AuthController;
