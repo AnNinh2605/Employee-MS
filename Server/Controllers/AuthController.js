@@ -1,4 +1,4 @@
-import UserModel from '../Models/UserModel.js';
+import AdminModel from '../Models/AdminModel.js';
 import CategoryModel from '../Models/CategoryModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import jwt from 'jsonwebtoken';
@@ -9,7 +9,7 @@ const saltRounds = 10;
 const login = async (req, res) => {
     let { email, password } = req.body;
     try {
-        let findEmail = await UserModel.find({ email: email })
+        let findEmail = await AdminModel.find({ email: email })
         if (findEmail && findEmail.length > 0) {
             if (findEmail[0].password === password) {
                 let payload = {
@@ -222,5 +222,109 @@ const deleteEmployee = async (req, res) => {
     }
 }
 
-const AuthController = { login, addCategory, fetchCategory, addEmployee, fetchEmployee, fetchEmployeeById, editEmployee, deleteEmployee }
+const getAdminCount = async (req, res) => {
+    try {
+        let results = await AdminModel.countDocuments({});
+        return res.status(200).json({
+            status: "success",
+            message: "Get adminCount successful",
+            data: results
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const getEmployeeCount = async (req, res) => {
+    try {
+        let results = await EmployeeModel.countDocuments({});
+        return res.status(200).json({
+            status: "success",
+            message: "Get EmployeeCount successful",
+            data: results
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const getSalaryTotal = async (req, res) => {
+    try {
+        let results = await EmployeeModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalSalary: { $sum: "$salary" }
+                }
+            }
+        ]);
+        return res.status(200).json({
+            status: "success",
+            message: "Get salary total successful",
+            data: results[0].totalSalary
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const getListAdmin = async (req, res) => {
+    try {
+        let results = await AdminModel.find({}, 'email');
+        return res.status(200).json({
+            status: "success",
+            message: "Get AdminList successful",
+            data: results
+        })
+    } catch (error) {
+        console.log("Fetch employee error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const AuthController = {
+    login,
+    addCategory,
+    fetchCategory,
+    addEmployee,
+    fetchEmployee,
+    fetchEmployeeById,
+    editEmployee,
+    deleteEmployee,
+    getAdminCount,
+    getEmployeeCount,
+    getSalaryTotal,
+    getListAdmin
+}
 export default AuthController;

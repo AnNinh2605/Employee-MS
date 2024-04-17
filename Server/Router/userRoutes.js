@@ -17,4 +17,9 @@ router.put('/editEmployee/:_id', AuthController.editEmployee)
 
 router.delete('/deleteEmployee/:_id', AuthController.deleteEmployee)
 
+router.get('/adminCount', AuthController.getAdminCount)
+router.get('/employeeCount', AuthController.getEmployeeCount)
+router.get('/salaryTotal', AuthController.getSalaryTotal)
+router.get('/listAdmin', AuthController.getListAdmin)
+
 export default router

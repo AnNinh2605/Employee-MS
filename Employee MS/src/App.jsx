@@ -13,8 +13,6 @@ import AddEmployee from './Components/Dashboard/AddEmployee.jsx';
 import EditEployee from './Components/Dashboard/EditEployee.jsx';
 
 function App() {
-    const [count, setCount] = useState(0)
-
     return (
         <BrowserRouter>
             <Routes>
