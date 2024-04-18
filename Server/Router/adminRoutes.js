@@ -4,7 +4,7 @@ import upload from '../utils/multerSetting.js'
 
 const router = express.Router()
 
-router.post('/login', AuthController.login)
+router.post('/adminLogin', AuthController.adminLogin)
 router.post('/logout', AuthController.logout)
 
 router.post('/addCategory', AuthController.addCategory)

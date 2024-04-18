@@ -10,7 +10,7 @@ const Dashboard = () => {
         let results = await axios.post('http://localhost:3000/auth/logout');
         if (results && results.status === 204) {
             localStorage.removeItem("access_token");
-            navigate('/login');
+            navigate('/');
         }
         else {
             alert("Get salaryTotal error");

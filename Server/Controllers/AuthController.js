@@ -6,12 +6,13 @@ import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
-const login = async (req, res) => {
+const adminLogin = async (req, res) => {
     let { email, password } = req.body;
     try {
         let findEmail = await AdminModel.find({ email: email })
         if (findEmail && findEmail.length > 0) {
-            if (findEmail[0].password === password) {
+            let isTruePassword = bcrypt.compareSync(password, findEmail[0].password); 
+            if (isTruePassword) {
                 let payload = {
                     _id: findEmail[0]._id,
                     email: findEmail[0].email
@@ -53,7 +54,7 @@ const login = async (req, res) => {
     }
 }
 
-const logout = async (req, res) => {
+const logout = (req, res) => {
     try {
         res.clearCookie("jwt_token");
         return res.status(204).json({
@@ -61,7 +62,7 @@ const logout = async (req, res) => {
             message: "Logout successful",
         });
     } catch (error) {
-        console.log("Login error", error);
+        console.log("Logout error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -179,7 +180,7 @@ const fetchEmployeeById = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Fetch employee by Id error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -209,7 +210,7 @@ const editEmployee = async (req, res) => {
             message: "Update employee successful",
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Edit employee error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -230,7 +231,7 @@ const deleteEmployee = async (req, res) => {
             message: "Delete employee successful",
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Delete employee error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -251,7 +252,7 @@ const getAdminCount = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Get adminCount error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -272,7 +273,7 @@ const getEmployeeCount = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Get employeeCount error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -321,7 +322,7 @@ const getListAdmin = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
+        console.log("Get listadmin error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -334,7 +335,7 @@ const getListAdmin = async (req, res) => {
 }
 
 const AuthController = {
-    login,
+    adminLogin,
     logout,
     addCategory,
     fetchCategory,

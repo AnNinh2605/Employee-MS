@@ -3,7 +3,7 @@ import axios from 'axios'
 import './Login.scss'
 import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+const AdminLogin = () => {
     const navigate = useNavigate();
     const [inputLogin, setInputLogin] = useState({
         email: '',
@@ -15,7 +15,7 @@ const Login = () => {
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
-            let results = await axios.post('http://localhost:3000/auth/login', inputLogin);
+            let results = await axios.post('http://localhost:3000/auth/adminLogin', inputLogin);
             if (results && results.status === 200) {
                 localStorage.setItem("access_token", results.data.data.access_token);
                 navigate('/dashboard')
@@ -56,4 +56,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default AdminLogin;
