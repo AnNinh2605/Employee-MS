@@ -14,7 +14,8 @@ const employeeSchema = new Schema({
     category_id: {
         type: Schema.Types.ObjectId,
         ref: 'CategoryModel'
-    }
+    },
+    role: String
 });
 
 const EmployeeModel = mongoose.model('Employee', employeeSchema);

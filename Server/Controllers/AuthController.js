@@ -6,16 +6,17 @@ import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
-const adminLogin = async (req, res) => {
+const login = async (req, res) => {
     let { email, password } = req.body;
     try {
         let findEmail = await AdminModel.find({ email: email })
         if (findEmail && findEmail.length > 0) {
-            let isTruePassword = bcrypt.compareSync(password, findEmail[0].password); 
+            let isTruePassword = bcrypt.compareSync(password, findEmail[0].password);
             if (isTruePassword) {
                 let payload = {
                     _id: findEmail[0]._id,
-                    email: findEmail[0].email
+                    email: findEmail[0].email,
+                    role: findEmail[0].role
                 }
                 let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
                 res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
@@ -23,7 +24,6 @@ const adminLogin = async (req, res) => {
                     status: "success",
                     message: "Login successful",
                     data: {
-                        ...payload,
                         access_token: token
                     }
                 });
@@ -120,32 +120,38 @@ const fetchCategory = async (req, res) => {
 
 const addEmployee = async (req, res) => {
     let { name, email, password, salary, address, category_id } = req.body
-    let filename = req.file.filename;
-    const hash = bcrypt.hashSync(password, saltRounds);
-    try {
-        await EmployeeModel.create({
-            name,
-            email,
-            password: hash,
-            salary,
-            address,
-            category_id,
-            image: filename
-        });
-        return res.status(201).json({
-            status: "success",
-            message: "Create employee successful",
-        });
-    } catch (error) {
-        console.log("Add employee error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+    //check if missing name, email, password
+    if (!name || !email || !password) {
+        res.status(400).send('Missing information');
+    }
+    else {
+        let filename = req.file.filename;
+        try {
+            await EmployeeModel.create({
+                name,
+                email,
+                password: bcrypt.hashSync(password, saltRounds),
+                salary,
+                address,
+                category_id,
+                image: filename,
+                role: "employee"
+            });
+            return res.status(201).json({
+                status: "success",
+                message: "Create employee successful",
+            });
+        } catch (error) {
+            console.log("Add employee error", error);
+            return res.status(500).json({
+                status: "error",
+                message: "Internal Server Error",
+                error: {
+                    code: "SERVER_ERROR",
+                    description: "An unexpected error occurred on the server."
+                }
+            });
+        }
     }
 }
 
@@ -335,7 +341,7 @@ const getListAdmin = async (req, res) => {
 }
 
 const AuthController = {
-    adminLogin,
+    login,
     logout,
     addCategory,
     fetchCategory,

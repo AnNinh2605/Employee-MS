@@ -5,9 +5,9 @@ import employeeRoute from './Router/employeeRoutes.js'
 import connectDB from './utils/ConnectDB.js'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
+import tokenMiddleware from './Middleware/AuthMiddleware.js'
 
 const app = express()
-const port = 3000
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -21,11 +21,11 @@ app.use(cookieParser())
 
 app.use(express.static('Public'))
 
-app.use('/auth', authRoutes)
-app.use('/employee', employeeRoute)
+app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], authRoutes)
+app.use('/employee', tokenMiddleware.tokenMiddleware, employeeRoute)
 
 connectDB();
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`)
 })

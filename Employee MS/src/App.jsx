@@ -1,7 +1,6 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AdminLogin from './Components/Login/AdminLogin.jsx';
-import EmployeeLogin from './Components/Login/EmployeeLogin.jsx';
+import Login from './Components/Login/Login.jsx';
 import EmployeeDetail from './Components/Dashboard/EmployeeDetail.jsx'
 import Dashboard from './Components/Dashboard/Dashboard';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -12,16 +11,13 @@ import Home from './Components/Dashboard/Home.jsx';
 import AddCategory from './Components/Dashboard/AddCategory.jsx';
 import AddEmployee from './Components/Dashboard/AddEmployee.jsx';
 import EditEployee from './Components/Dashboard/EditEployee.jsx';
-import Start from './Components/Dashboard/Start.jsx';
 import ProtectedRoute from './Components/Dashboard/ProtectedRoute.jsx';
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Start />} />
-                <Route path='/adminLogin' element={<AdminLogin />} />
-                <Route path='/employeeLogin' element={<EmployeeLogin />} />
+                <Route path='/login' element={<Login />} />
                 <Route path='/employeeDetail/:_id' element={<EmployeeDetail />} />
                 <Route path='/dashboard' element={
                     <ProtectedRoute>
