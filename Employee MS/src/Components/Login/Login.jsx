@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import axios from 'axios'
 import './Login.scss'
 import { useNavigate } from 'react-router-dom'
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -17,13 +18,15 @@ const Login = () => {
         try {
             let results = await axios.post('http://localhost:3000/auth/login', inputLogin);
             if (results && results.status === 200) {
-                localStorage.setItem("access_token", results.data.data.access_token);
-                if (results.data.data === "employee") {
-                    navigate('/employee');
-                }
-                else {
+                let token = results.data.data.access_token
+                let decodedToken = jwtDecode(token);
+                if (decodedToken.role === "admin") {
                     navigate('/dashboard');
                 }
+                else {
+                    navigate(`/employeeDetail/${decodedToken._id}`);
+                }
+                localStorage.setItem("access_token", results.data.data.access_token);
             }
         } catch (error) {
             let errorMS = error.response.data.message;

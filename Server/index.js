@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import authRoutes from './Router/adminRoutes.js'
-import employeeRoute from './Router/employeeRoutes.js'
+import authRoutes from './Router/Routes.js'
 import connectDB from './utils/ConnectDB.js'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
@@ -22,7 +21,6 @@ app.use(cookieParser())
 app.use(express.static('Public'))
 
 app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], authRoutes)
-app.use('/employee', tokenMiddleware.tokenMiddleware, employeeRoute)
 
 connectDB();
 

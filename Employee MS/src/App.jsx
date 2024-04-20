@@ -17,7 +17,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/login' element={<Login />} />
+                <Route path='/' element={<Login />} />
                 <Route path='/employeeDetail/:_id' element={<EmployeeDetail />} />
                 <Route path='/dashboard' element={
                     <ProtectedRoute>

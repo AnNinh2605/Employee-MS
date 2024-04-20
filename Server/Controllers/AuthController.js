@@ -1,4 +1,3 @@
-import AdminModel from '../Models/AdminModel.js';
 import CategoryModel from '../Models/CategoryModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import jwt from 'jsonwebtoken';
@@ -9,7 +8,7 @@ const saltRounds = 10;
 const login = async (req, res) => {
     let { email, password } = req.body;
     try {
-        let findEmail = await AdminModel.find({ email: email })
+        let findEmail = await EmployeeModel.find({ email: email })
         if (findEmail && findEmail.length > 0) {
             let isTruePassword = bcrypt.compareSync(password, findEmail[0].password);
             if (isTruePassword) {
@@ -251,7 +250,7 @@ const deleteEmployee = async (req, res) => {
 
 const getAdminCount = async (req, res) => {
     try {
-        let results = await AdminModel.countDocuments({});
+        let results = await EmployeeModel.countDocuments({role: "admin"});
         return res.status(200).json({
             status: "success",
             message: "Get adminCount successful",
@@ -272,7 +271,7 @@ const getAdminCount = async (req, res) => {
 
 const getEmployeeCount = async (req, res) => {
     try {
-        let results = await EmployeeModel.countDocuments({});
+        let results = await EmployeeModel.countDocuments({role: "employee"});
         return res.status(200).json({
             status: "success",
             message: "Get EmployeeCount successful",
@@ -321,7 +320,7 @@ const getSalaryTotal = async (req, res) => {
 
 const getListAdmin = async (req, res) => {
     try {
-        let results = await AdminModel.find({}, 'email');
+        let results = await EmployeeModel.find({role: "admin"}, 'email');
         return res.status(200).json({
             status: "success",
             message: "Get AdminList successful",
@@ -329,6 +328,28 @@ const getListAdmin = async (req, res) => {
         })
     } catch (error) {
         console.log("Get listadmin error", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Internal Server Error",
+            error: {
+                code: "SERVER_ERROR",
+                description: "An unexpected error occurred on the server."
+            }
+        });
+    }
+}
+
+const getEmployeeDetail = async (req, res) => {
+    let { _id } = req.params;
+    try {
+        let results = await EmployeeModel.find({ _id: _id }, '-password');
+        return res.status(200).json({
+            status: "success",
+            message: "Get employee detail successful",
+            data: results
+        })
+    } catch (error) {
+        console.log("Get employeeDetail error", error);
         return res.status(500).json({
             status: "error",
             message: "Internal Server Error",
@@ -353,6 +374,7 @@ const AuthController = {
     getAdminCount,
     getEmployeeCount,
     getSalaryTotal,
-    getListAdmin
+    getListAdmin,
+    getEmployeeDetail
 }
 export default AuthController;

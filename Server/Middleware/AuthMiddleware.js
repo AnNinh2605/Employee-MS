@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import AdminModel from '../Models/AdminModel.js';
+import EmployeeModel from '../Models/EmployeeModel.js';
 
 // check validate account 
 const tokenMiddleware = (req, res, next) => {
@@ -25,20 +25,20 @@ const tokenMiddleware = (req, res, next) => {
 }
 
 const isAdmin = async (req, res, next) => {
-    if(req.url === "/login"){
+    // if(req.url === "/login"){
         next();
-    }
-    else {
-        let _id = req.userId;
-        try {
-            let results = await AdminModel.findById(_id);
-            if (results && results.role === 'admin') {
-                next();
-            }
-        } catch (error) {
-            return res.status(403).send('Your account can not access to this resources');
-        }
-    }
+    // }
+    // else {
+    //     let _id = req.userId;
+    //     try {
+    //         let results = await EmployeeModel.findById(_id);
+    //         if (results && results.role === 'admin') {
+    //             next();
+    //         }
+    //     } catch (error) {
+    //         return res.status(403).send('Your account can not access to this resources');
+    //     }
+    // }
 }
 
 const authMiddleware = { tokenMiddleware, isAdmin }
