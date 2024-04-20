@@ -1,11 +1,14 @@
 import express from 'express'
 import cors from 'cors'
+import 'dotenv/config'
+import cookieParser from 'cookie-parser'
+
+//import route
 import authRoutes from './Router/adminRoutes.js'
 import employeeRoutes from './Router/employeeRoutes.js'
 import commonRoutes from './Router/commonRoutes.js'
+
 import connectDB from './utils/ConnectDB.js'
-import 'dotenv/config'
-import cookieParser from 'cookie-parser'
 import tokenMiddleware from './Middleware/AuthMiddleware.js'
 
 const app = express()
@@ -17,11 +20,10 @@ app.use(cors({
 }))
 
 app.use(express.json());
-
 app.use(cookieParser())
-
 app.use(express.static('Public'))
 
+//route
 app.use('/', commonRoutes)
 app.use('/employee', tokenMiddleware.tokenMiddleware, employeeRoutes)
 app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], authRoutes)

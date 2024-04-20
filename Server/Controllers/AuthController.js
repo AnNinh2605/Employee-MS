@@ -1,62 +1,9 @@
 import CategoryModel from '../Models/CategoryModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import errorHandler from '../utils/errorHandler.js';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
-
-const login = async (req, res) => {
-    let { email, password } = req.body;
-    try {
-        let findEmail = await EmployeeModel.find({ email: email })
-        if (findEmail && findEmail.length > 0) {
-            let isTruePassword = bcrypt.compareSync(password, findEmail[0].password);
-            if (isTruePassword) {
-                let payload = {
-                    _id: findEmail[0]._id,
-                    email: findEmail[0].email,
-                    role: findEmail[0].role
-                }
-                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
-                res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
-                return res.status(200).json({
-                    status: "success",
-                    message: "Login successful",
-                    data: {
-                        access_token: token
-                    }
-                });
-            }
-            else {
-                return res.status(401).json({
-                    status: "error",
-                    message: "Email/ password is not correct",
-                });
-            }
-        }
-        else {
-            return res.status(401).json({
-                status: "error",
-                message: "Email is not existing",
-            });
-        }
-    } catch (error) {
-        return errorHandler(res, error);
-    }
-}
-
-const logout = (req, res) => {
-    try {
-        res.clearCookie("jwt_token");
-        return res.status(204).json({
-            status: "success",
-            message: "Logout successful",
-        });
-    } catch (error) {
-        return errorHandler(res, error);
-    }
-}
 
 const addCategory = async (req, res) => {
     try {
@@ -237,8 +184,6 @@ const getListAdmin = async (req, res) => {
 }
 
 const AuthController = {
-    login,
-    logout,
     addCategory,
     fetchCategory,
     addEmployee,

@@ -1,6 +1,8 @@
 import express from 'express'
-const router = express.Router()
+
 import EmployeeController from '../Controllers/EmployeeController.js'
+
+const router = express.Router()
 
 router.get('/employeeDetail/:_id', EmployeeController.getEmployeeDetail)
 
