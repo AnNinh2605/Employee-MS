@@ -8,7 +8,7 @@ const EmployeeDetail = () => {
     const navigate = useNavigate()
 
     const getEmployeeDetail = async () => {
-        let results = await axios.get(`http://localhost:3000/auth/employeeDetail/${_id}`)
+        let results = await axios.get(`http://localhost:3000/employee/employeeDetail/${_id}`)
         if (results && results.status === 200) {
             let data = results.data.data[0];
             setEmployee(data);
@@ -23,7 +23,7 @@ const EmployeeDetail = () => {
     }, [])
 
     const handleLogout = async () => {
-        let results = await axios.post('http://localhost:3000/auth/logout')
+        let results = await axios.post('http://localhost:3000/logout')
         if (results && results.status === 204) {
             localStorage.removeItem("access_token");
             navigate('/');

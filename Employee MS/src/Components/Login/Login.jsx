@@ -16,7 +16,7 @@ const Login = () => {
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
-            let results = await axios.post('http://localhost:3000/auth/login', inputLogin);
+            let results = await axios.post('http://localhost:3000/login', inputLogin);
             if (results && results.status === 200) {
                 let token = results.data.data.access_token
                 let decodedToken = jwtDecode(token);

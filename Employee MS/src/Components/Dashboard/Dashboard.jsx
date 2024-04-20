@@ -7,7 +7,7 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        let results = await axios.post('http://localhost:3000/auth/logout');
+        let results = await axios.post('http://localhost:3000/logout');
         if (results && results.status === 204) {
             localStorage.removeItem("access_token");
             navigate('/');
