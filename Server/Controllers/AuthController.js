@@ -1,5 +1,6 @@
 import CategoryModel from '../Models/CategoryModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
+import errorHandler from '../utils/errorHandler.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -41,15 +42,7 @@ const login = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("Login error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -61,15 +54,7 @@ const logout = (req, res) => {
             message: "Logout successful",
         });
     } catch (error) {
-        console.log("Logout error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -84,15 +69,7 @@ const addCategory = async (req, res) => {
             message: "Create category successful",
         });
     } catch (error) {
-        console.log("Add category error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -105,15 +82,7 @@ const fetchCategory = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Get category error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -141,15 +110,7 @@ const addEmployee = async (req, res) => {
                 message: "Create employee successful",
             });
         } catch (error) {
-            console.log("Add employee error", error);
-            return res.status(500).json({
-                status: "error",
-                message: "Internal Server Error",
-                error: {
-                    code: "SERVER_ERROR",
-                    description: "An unexpected error occurred on the server."
-                }
-            });
+            return errorHandler(res, error);
         }
     }
 }
@@ -163,15 +124,7 @@ const fetchEmployee = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -185,15 +138,7 @@ const fetchEmployeeById = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Fetch employee by Id error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -215,15 +160,7 @@ const editEmployee = async (req, res) => {
             message: "Update employee successful",
         })
     } catch (error) {
-        console.log("Edit employee error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -236,15 +173,7 @@ const deleteEmployee = async (req, res) => {
             message: "Delete employee successful",
         })
     } catch (error) {
-        console.log("Delete employee error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -257,15 +186,7 @@ const getAdminCount = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Get adminCount error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -278,15 +199,7 @@ const getEmployeeCount = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Get employeeCount error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -306,15 +219,7 @@ const getSalaryTotal = async (req, res) => {
             data: results[0].totalSalary
         })
     } catch (error) {
-        console.log("Fetch employee error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
@@ -327,15 +232,7 @@ const getListAdmin = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Get listadmin error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 

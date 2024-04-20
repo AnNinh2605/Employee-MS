@@ -1,4 +1,5 @@
 import EmployeeModel from "../Models/EmployeeModel.js";
+import errorHandler from "../utils/errorHandler.js";
 
 const getEmployeeDetail = async (req, res) => {
     let { _id } = req.params;
@@ -10,15 +11,7 @@ const getEmployeeDetail = async (req, res) => {
             data: results
         })
     } catch (error) {
-        console.log("Get employeeDetail error", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Internal Server Error",
-            error: {
-                code: "SERVER_ERROR",
-                description: "An unexpected error occurred on the server."
-            }
-        });
+        return errorHandler(res, error);
     }
 }
 
