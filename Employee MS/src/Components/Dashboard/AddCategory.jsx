@@ -7,14 +7,17 @@ const AddCategory = () => {
     const [category, setCategory] = useState();
     const handleAddCategory = async (event) => {
         event.preventDefault();
+        if (!category || category.trim().length === 0) {
+            alert("Missing category");
+            return;
+        }
         try {
             let results = await axios.post('http://localhost:3000/auth/addCategory', { category });
             if (results && results.status === 201) {
                 navigate('/dashboard/category');
             }
         } catch (error) {
-            alert("Add category error");
-            console.log("Add category error", error)
+            //error
         }
     }
     return (
@@ -25,7 +28,7 @@ const AddCategory = () => {
                     <div className="form-group mb-2">
                         <label htmlFor="category"><strong>Category: </strong></label>
                         <input type="text" className="form-control" id="category"
-                            placeholder="Category" autoComplete='on'
+                            placeholder="Category" autoComplete='on' required
                             onChange={event => setCategory(event.target.value)}
                         ></input>
                     </div>

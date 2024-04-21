@@ -6,6 +6,12 @@ import bcrypt from 'bcrypt';
 const saltRounds = 10;
 
 const addCategory = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({
+            status: "error",
+            message: "Request body is missing",
+        })
+    }
     try {
         let { category } = req.body;
         await CategoryModel.create({
@@ -13,7 +19,7 @@ const addCategory = async (req, res) => {
         });
         return res.status(201).json({
             status: "success",
-            message: "Create category successful",
+            message: "Created category successfully",
         });
     } catch (error) {
         return errorHandler(res, error);
@@ -25,7 +31,7 @@ const fetchCategory = async (req, res) => {
         let results = await CategoryModel.find();
         return res.status(200).json({
             status: "success",
-            message: "Get category successful",
+            message: "Get category successfully",
             data: results
         })
     } catch (error) {
@@ -37,28 +43,29 @@ const addEmployee = async (req, res) => {
     let { name, email, password, salary, address, category_id } = req.body
     //check if missing name, email, password
     if (!name || !email || !password) {
-        res.status(400).send('Missing information');
+        return res.status(400).json({
+            status: "error",
+            message: "Request body is missing",
+        })
     }
-    else {
+    try {
         let filename = req.file.filename;
-        try {
-            await EmployeeModel.create({
-                name,
-                email,
-                password: bcrypt.hashSync(password, saltRounds),
-                salary,
-                address,
-                category_id,
-                image: filename,
-                role: "employee"
-            });
-            return res.status(201).json({
-                status: "success",
-                message: "Create employee successful",
-            });
-        } catch (error) {
-            return errorHandler(res, error);
-        }
+        await EmployeeModel.create({
+            name,
+            email,
+            password: bcrypt.hashSync(password, saltRounds),
+            salary,
+            address,
+            category_id,
+            image: filename,
+            role: "employee"
+        });
+        return res.status(201).json({
+            status: "success",
+            message: "Created employee successfully",
+        });
+    } catch (error) {
+        return errorHandler(res, error);
     }
 }
 
@@ -67,7 +74,7 @@ const fetchEmployee = async (req, res) => {
         let results = await EmployeeModel.find({}, '-password');
         return res.status(200).json({
             status: "success",
-            message: "Get employee successful",
+            message: "Get employee successfully",
             data: results
         })
     } catch (error) {
@@ -81,7 +88,7 @@ const fetchEmployeeById = async (req, res) => {
         let results = await EmployeeModel.findById(_id, '-password -image');
         return res.status(200).json({
             status: "success",
-            message: "Get employee successful",
+            message: "Get employee successfully",
             data: results
         })
     } catch (error) {
@@ -104,7 +111,7 @@ const editEmployee = async (req, res) => {
         );
         return res.status(204).json({
             status: "success",
-            message: "Update employee successful",
+            message: "Updated employee successfully",
         })
     } catch (error) {
         return errorHandler(res, error);
@@ -117,7 +124,7 @@ const deleteEmployee = async (req, res) => {
         await EmployeeModel.deleteOne({ _id: _id });
         return res.status(204).json({
             status: "success",
-            message: "Delete employee successful",
+            message: "Deleted employee successfully",
         })
     } catch (error) {
         return errorHandler(res, error);
@@ -126,7 +133,7 @@ const deleteEmployee = async (req, res) => {
 
 const getAdminCount = async (req, res) => {
     try {
-        let results = await EmployeeModel.countDocuments({role: "admin"});
+        let results = await EmployeeModel.countDocuments({ role: "admin" });
         return res.status(200).json({
             status: "success",
             message: "Get adminCount successful",
@@ -139,7 +146,7 @@ const getAdminCount = async (req, res) => {
 
 const getEmployeeCount = async (req, res) => {
     try {
-        let results = await EmployeeModel.countDocuments({role: "employee"});
+        let results = await EmployeeModel.countDocuments({ role: "employee" });
         return res.status(200).json({
             status: "success",
             message: "Get EmployeeCount successful",
@@ -162,7 +169,7 @@ const getSalaryTotal = async (req, res) => {
         ]);
         return res.status(200).json({
             status: "success",
-            message: "Get salary total successful",
+            message: "Get salary total successfully",
             data: results[0].totalSalary
         })
     } catch (error) {
@@ -172,10 +179,10 @@ const getSalaryTotal = async (req, res) => {
 
 const getListAdmin = async (req, res) => {
     try {
-        let results = await EmployeeModel.find({role: "admin"}, 'email');
+        let results = await EmployeeModel.find({ role: "admin" }, 'email');
         return res.status(200).json({
             status: "success",
-            message: "Get AdminList successful",
+            message: "Get AdminList successfully",
             data: results
         })
     } catch (error) {
