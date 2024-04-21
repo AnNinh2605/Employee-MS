@@ -15,22 +15,28 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        try {
-            let results = await axios.post('http://localhost:3000/login', inputLogin);
-            if (results && results.status === 200) {
-                let token = results.data.data.access_token
-                let decodedToken = jwtDecode(token);
-                if (decodedToken.role === "admin") {
-                    navigate('/dashboard');
+        if (!inputLogin.email || !inputLogin.password) {
+            alert('Missing email/ password');
+            return;
+        }
+        else {
+            try {
+                let results = await axios.post('http://localhost:3000/login', inputLogin);
+                if (results && results.status === 200) {
+                    let token = results.data.data.access_token
+                    let decodedToken = jwtDecode(token);
+                    if (decodedToken.role === "admin") {
+                        navigate('/dashboard');
+                    }
+                    else {
+                        navigate(`/employeeDetail/${decodedToken._id}`);
+                    }
+                    localStorage.setItem("access_token", results.data.data.access_token);
                 }
-                else {
-                    navigate(`/employeeDetail/${decodedToken._id}`);
-                }
-                localStorage.setItem("access_token", results.data.data.access_token);
+            } catch (error) {
+                let errorMS = error.response.data.message;
+                setError(errorMS);
             }
-        } catch (error) {
-            let errorMS = error.response.data.message;
-            setError(errorMS);
         }
     }
     return (
@@ -42,14 +48,14 @@ const Login = () => {
                     <div className="form-group mb-2">
                         <label htmlFor="email"><strong>Email: </strong></label>
                         <input type="email" className="form-control" id="email"
-                            placeholder="Email" autoComplete='on'
+                            placeholder="Email" autoComplete='on' required
                             onChange={(event) => setInputLogin({ ...inputLogin, email: event.target.value })}
                         ></input>
                     </div>
                     <div className="form-group mb-2">
                         <label htmlFor="password">Password: </label>
                         <input type="password" className="form-control" id="password"
-                            placeholder="Password" autoComplete='on'
+                            placeholder="Password" autoComplete='on' required
                             onChange={(event) => setInputLogin({ ...inputLogin, password: event.target.value })}
                         ></input>
                     </div>

@@ -6,6 +6,12 @@ import errorHandler from '../utils/errorHandler.js';
 
 const login = async (req, res) => {
     let { email, password } = req.body;
+    if (!email || !password){
+        return res.status(400).json({
+            status: "error",
+            message: "Missing information",
+        });
+    }
     try {
         let findEmail = await EmployeeModel.find({ email: email })
         if (findEmail && findEmail.length > 0) {
@@ -16,11 +22,11 @@ const login = async (req, res) => {
                     email: findEmail[0].email,
                     role: findEmail[0].role
                 }
-                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
+                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: 60 });
                 res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
                 return res.status(200).json({
                     status: "success",
-                    message: "Login successful",
+                    message: "Login successfully",
                     data: {
                         access_token: token
                     }
@@ -49,7 +55,7 @@ const logout = (req, res) => {
         res.clearCookie("jwt_token");
         return res.status(204).json({
             status: "success",
-            message: "Logout successful",
+            message: "Logout successfully",
         });
     } catch (error) {
         return errorHandler(res, error);
