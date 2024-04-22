@@ -1,14 +1,19 @@
 import axios from "axios";
 
 const axiosConfig = () => {
-    // axios.defaults.baseURL = 'https://api.example.com';
+    axios.defaults.baseURL = 'http://localhost:3000';
     axios.defaults.withCredentials = true;
     // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
         // Do something before request is sent
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem("access_token")}`;
+        const notContainHeaderArrayUrl = ['/login', '/logout'];
+        let url = config.url;
+        let isContainUrl = notContainHeaderArrayUrl.some(path => url.includes(path));
+        if(!isContainUrl){
+            config.headers['Authorization'] = `Bearer ${localStorage.getItem("access_token")}`;
+        }
         return config;
     }, function (error) {
         // Do something with request error

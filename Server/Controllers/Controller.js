@@ -22,7 +22,7 @@ const login = async (req, res) => {
                     email: findEmail[0].email,
                     role: findEmail[0].role
                 }
-                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: 60 });
+                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
                 res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
                 return res.status(200).json({
                     status: "success",

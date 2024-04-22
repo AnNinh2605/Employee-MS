@@ -8,7 +8,7 @@ import authRoutes from './Router/adminRoutes.js'
 import employeeRoutes from './Router/employeeRoutes.js'
 import commonRoutes from './Router/commonRoutes.js'
 
-import connectDB from './utils/ConnectDB.js'
+import connectDB from './utils/connectDB.js'
 import tokenMiddleware from './Middleware/AuthMiddleware.js'
 
 const app = express()

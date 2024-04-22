@@ -1,17 +1,18 @@
-import axios from 'axios';
 import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import adminService from '../../Services/adminService.js';
 
 const Category = () => {
     const [category, setCategory] = useState([]);
     const fetchCategory = async () => {
-        let results = await axios.get('http://localhost:3000/auth/category');
+        let results = await adminService.fetchCategoryService();
         if (results && results.status === 200) {
             let data = results.data.data
             setCategory(data);
         }
         else {
-            alert("Fetch category error");
+            //error
         }
     }
     useEffect(() => {

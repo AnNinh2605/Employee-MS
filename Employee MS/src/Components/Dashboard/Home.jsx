@@ -1,6 +1,7 @@
-import axios from 'axios';
 import { React, useEffect } from 'react';
 import { useState } from 'react';
+
+import adminService from '../../Services/adminService.js';
 
 const Home = () => {
     const [adminCount, setAdminCount] = useState(0)
@@ -9,41 +10,41 @@ const Home = () => {
     const [listAdmins, setListAdmins] = useState([])
 
     const getAdminCount = async () => {
-        let results = await axios.get('http://localhost:3000/auth/adminCount');
+        let results = await adminService.countAdminService();
         if (results && results.status === 200) {
             setAdminCount(results.data.data)
         }
         else {
-            alert("Get adminCount error");
+            //error
         }
     }
     const getEmployeeCount = async () => {
-        let results = await axios.get('http://localhost:3000/auth/employeeCount');
+        let results = await adminService.countEmployeeService();
         if (results && results.status === 200) {
             setEmployeeCount(results.data.data)
         }
         else {
-            alert("Get EmployeeCount error");
+            //error
         }
     }
 
     const getSalaryTotal = async () => {
-        let results = await axios.get('http://localhost:3000/auth/salaryTotal');
+        let results = await adminService.countTotalSalaryService();
         if (results && results.status === 200) {
             setSalaryTotal(results.data.data)
         }
         else {
-            alert("Get salaryTotal error");
+            //error
         }
     }
 
     const getListAdmin = async () => {
-        let results = await axios.get('http://localhost:3000/auth/listAdmin');
+        let results = await adminService.getListAdminService();
         if (results && results.status === 200) {
             setListAdmins(results.data.data)
         }
         else {
-            alert("Get list admin error");
+            //error
         }
     }
 

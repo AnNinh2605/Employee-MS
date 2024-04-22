@@ -1,6 +1,8 @@
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+
+import employeeService from '../../Services/employeeService.js'
+import commonService from '../../Services/commonService.js'
 
 const EmployeeDetail = () => {
     const [employee, setEmployee] = useState([])
@@ -8,28 +10,27 @@ const EmployeeDetail = () => {
     const navigate = useNavigate()
 
     const getEmployeeDetail = async () => {
-        let results = await axios.get(`http://localhost:3000/employee/employeeDetail/${_id}`)
+        let results = await employeeService.getEmployeeDetailService(_id);
         if (results && results.status === 200) {
-            let data = results.data.data[0];
+            let data = results.data.data;
             setEmployee(data);
         }
         else {
-            alert("Fetch employee detail error");
+            //error
         }
     }
-
     useEffect(() => {
         getEmployeeDetail();
     }, [])
 
     const handleLogout = async () => {
-        let results = await axios.post('http://localhost:3000/logout')
+        let results = await commonService.logoutService();
         if (results && results.status === 204) {
             localStorage.removeItem("access_token");
             navigate('/');
         }
         else {
-            alert("Employee detail logout error");
+            //error
         }
     }
     return (

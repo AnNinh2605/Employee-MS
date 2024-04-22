@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+
 import "bootstrap-icons/font/bootstrap-icons.css";
-import axios from "axios";
+
+import commonService from '../../Services/commonService';
 
 const Dashboard = () => {
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        let results = await axios.post('http://localhost:3000/logout');
+        let results = await commonService.logoutService();
         if (results && results.status === 204) {
             localStorage.removeItem("access_token");
             navigate('/');
         }
         else {
-            alert("Get salaryTotal error");
+           //error
         }
     }
     return (

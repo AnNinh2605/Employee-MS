@@ -1,8 +1,9 @@
 import { React, useState } from 'react';
-import axios from 'axios'
-import './Login.scss'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
+import './Login.scss'
+
+import commonService from '../../Services/commonService.js';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -19,24 +20,22 @@ const Login = () => {
             alert('Missing email/ password');
             return;
         }
-        else {
-            try {
-                let results = await axios.post('http://localhost:3000/login', inputLogin);
-                if (results && results.status === 200) {
-                    let token = results.data.data.access_token
-                    let decodedToken = jwtDecode(token);
-                    if (decodedToken.role === "admin") {
-                        navigate('/dashboard');
-                    }
-                    else {
-                        navigate(`/employeeDetail/${decodedToken._id}`);
-                    }
-                    localStorage.setItem("access_token", results.data.data.access_token);
+        try {
+            let results = await commonService.loginService(inputLogin);
+            if (results && results.status === 200) {
+                let token = results.data.data.access_token
+                let decodedToken = jwtDecode(token);
+                if (decodedToken.role === "admin") {
+                    navigate('/dashboard');
                 }
-            } catch (error) {
-                let errorMS = error.response.data.message;
-                setError(errorMS);
+                else {
+                    navigate(`/employeeDetail/${decodedToken._id}`);
+                }
+                localStorage.setItem("access_token", results.data.data.access_token);
             }
+        } catch (error) {
+            let errorMS = error.response.data.message;
+            setError(errorMS);
         }
     }
     return (

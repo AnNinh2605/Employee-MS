@@ -1,27 +1,28 @@
-import axios from 'axios';
 import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './style.scss'
 
+import adminService from '../../Services/adminService.js';
+
 const Employee = () => {
     const [employee, setEmployee] = useState([]);
     const fetchEmployee = async () => {
-        let results = await axios.get('http://localhost:3000/auth/employee');
+        let results = await adminService.fetchEmployeeService();
         if (results && results.status === 200) {
             let data = results.data.data
             setEmployee(data);
         }
         else {
-            alert("Fetch employee error");
+            //error
         }
     }
     const handleDeleteEmployee = async (_id) => {
-        let results = await axios.delete(`http://localhost:3000/auth/deleteEmployee/${_id}`);
+        let results = await adminService.deleteEmployeeService(_id);
         if (results && results.status === 204) {
             window.location.reload();
         }
         else {
-            alert("Fetch employee error");
+            //error
         }
     }
     useEffect(() => {

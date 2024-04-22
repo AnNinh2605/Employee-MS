@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+
+import adminService from '../../Services/adminService.js';
 
 const AddCategory = () => {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AddCategory = () => {
             return;
         }
         try {
-            let results = await axios.post('http://localhost:3000/auth/addCategory', { category });
+            let results = await adminService.addCategoryService(category);
             if (results && results.status === 201) {
                 navigate('/dashboard/category');
             }

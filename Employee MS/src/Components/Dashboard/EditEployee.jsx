@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios';
+
+import adminService from '../../Services/adminService.js';
 
 const EditEmployee = (props) => {
     const navigate = useNavigate();
@@ -15,23 +16,23 @@ const EditEmployee = (props) => {
     });
 
     const fetchCategory = async () => {
-        let results = await axios.get('http://localhost:3000/auth/category');
+        let results = await adminService.fetchCategoryService();
         if (results && results.status === 200) {
             let data = results.data.data
             setCategory(data);
         }
         else {
-            alert("Fetch category error");
+            //error
         }
     }
     const fetchEmployeeById = async () => {
-        let results = await axios.get(`http://localhost:3000/auth/employee/${_id}`);
+        let results = await adminService.fetchEmployeeByIdService(_id);
         if (results && results.status === 200) {
             let data = results.data.data
             setEmployee(data);
         }
         else {
-            alert("Fetch employeeById error");
+            //error
         }
     }
     useEffect(() => {
@@ -42,12 +43,12 @@ const EditEmployee = (props) => {
     const handleEditEmployee = async (event) => {
         event.preventDefault();
         try {
-            let results = await axios.put(`http://localhost:3000/auth/editEmployee/${_id}`, employee);
+            let results = await adminService.editEmployeeService(_id, employee);
             if (results && results.status === 204) {
                 navigate('/dashboard/employee');
             }
         } catch (error) {
-            alert("Update employee error");
+            //error
             console.log("Update employee error", error)
         }
     }

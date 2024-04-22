@@ -32,4 +32,5 @@ const isAdmin = async (req, res, next) => {
 }
 
 const authMiddleware = { tokenMiddleware, isAdmin }
+
 export default authMiddleware;

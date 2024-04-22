@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios';
+
+import adminService from '../../Services/adminService.js';
 
 const AddEmployee = () => {
     const navigate = useNavigate();
@@ -15,13 +16,13 @@ const AddEmployee = () => {
         image: "",
     });
     const fetchCategory = async () => {
-        let results = await axios.get('http://localhost:3000/auth/category');
+        let results = await adminService.fetchCategoryService();
         if (results && results.status === 200) {
             let data = results.data.data
             setCategory(data);
         }
         else {
-            alert("Fetch category error");
+            //error
         }
     }
     useEffect(() => {
@@ -39,13 +40,12 @@ const AddEmployee = () => {
         formData.append("category_id", employee.category_id);
         formData.append("image", employee.image);
         try {
-            let results = await axios.post('http://localhost:3000/auth/addEmployee', formData);
+            let results = await adminService.addEmployeeService(formData);
             if (results && results.status === 201) {
                 navigate('/dashboard/employee');
             }
         } catch (error) {
-            alert("Add employee error");
-            console.log("Add employee error", error)
+            //error
         }
     }
     return (
@@ -62,6 +62,8 @@ const AddEmployee = () => {
                             className="form-control"
                             id="inputName"
                             placeholder="Enter Name"
+                            autoComplete="on"
+                            required
                             onChange={(event) =>
                                 setEmployee({ ...employee, name: event.target.value })
                             }
@@ -76,7 +78,8 @@ const AddEmployee = () => {
                             className="form-control"
                             id="inputEmail4"
                             placeholder="Enter Email"
-                            autoComplete="off"
+                            autoComplete="on"
+                            required
                             onChange={(event) =>
                                 setEmployee({ ...employee, email: event.target.value })
                             }
@@ -91,6 +94,8 @@ const AddEmployee = () => {
                             className="form-control"
                             id="inputPassword4"
                             placeholder="Enter Password"
+                            autoComplete='off'
+                            required
                             onChange={(event) =>
                                 setEmployee({ ...employee, password: event.target.value })
                             }
@@ -103,7 +108,7 @@ const AddEmployee = () => {
                             className="form-control"
                             id="inputSalary"
                             placeholder="Enter Salary"
-                            autoComplete="off"
+                            autoComplete="on"
                             onChange={(event) =>
                                 setEmployee({ ...employee, salary: event.target.value })
                             }

@@ -13,6 +13,7 @@ router.get('/listAdmin', AuthController.getListAdmin)
 
 // Manage employess page
 router.get('/employee', AuthController.fetchEmployee)
+router.get('/employee/:_id', AuthController.fetchEmployeeById)
 router.post('/addEmployee', upload.single('image'), AuthController.addEmployee)
 router.put('/editEmployee/:_id', AuthController.editEmployee)
 router.delete('/deleteEmployee/:_id', AuthController.deleteEmployee)
