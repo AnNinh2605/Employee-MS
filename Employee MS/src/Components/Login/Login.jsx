@@ -1,12 +1,16 @@
 import { React, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
+import { useDispatch } from 'react-redux'
+
 import './Login.scss'
 
 import commonService from '../../Services/commonService.js';
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [inputLogin, setInputLogin] = useState({
         email: '',
         password: ''
@@ -31,6 +35,10 @@ const Login = () => {
                 else {
                     navigate(`/employeeDetail/${decodedToken._id}`);
                 }
+                dispatch({
+                    type:'LOGIN_SUCCESS',
+                    payload: decodedToken
+                })
                 localStorage.setItem("access_token", results.data.data.access_token);
             }
         } catch (error) {
