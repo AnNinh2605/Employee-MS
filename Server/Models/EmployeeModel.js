@@ -2,12 +2,19 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const employeeSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: [true, "name is required"]
+    },
     email: {
         type: String,
-        unique: true
+        unique: true,
+        required: [true, "email is required"]
     },
-    password: String,
+    password: {
+        type: String,
+        required: [true, "password is required"]
+    },
     salary: Number,
     address: String,
     image: String,

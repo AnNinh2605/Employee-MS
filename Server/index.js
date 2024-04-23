@@ -11,6 +11,7 @@ import commonRoutes from './Router/commonRoutes.js'
 import connectDB from './utils/connectDB.js'
 import tokenMiddleware from './Middleware/AuthMiddleware.js'
 
+const PORT = process.env.PORT || 3001
 const app = express()
 
 app.use(cors({
@@ -30,6 +31,6 @@ app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], aut
 
 connectDB();
 
-app.listen(process.env.PORT, () => {
-    console.log(`Example app listening on port ${process.env.PORT}`)
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
 })

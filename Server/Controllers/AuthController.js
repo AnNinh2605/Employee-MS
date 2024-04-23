@@ -100,7 +100,7 @@ const editEmployee = async (req, res) => {
     let { name, email, salary, address, category_id } = req.body
     let _id = req.params._id;
     try {
-        await EmployeeModel.updateOne({ _id: _id },
+        await EmployeeModel.findByIdAndUpdate(_id,
             {
                 name,
                 email,
