@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './style.scss'
 
 import adminService from '../../Services/adminService.js';
@@ -16,6 +17,7 @@ const Employee = () => {
             //error
         }
     }
+
     const handleDeleteEmployee = async (_id) => {
         let results = await adminService.deleteEmployeeService(_id);
         if (results && results.status === 204) {
@@ -25,6 +27,28 @@ const Employee = () => {
             //error
         }
     }
+
+    const importData = async (event) => {
+        if (!event.target || !event.target.files[0] || event.target.files[0].type !== 'text/csv') {
+            toast.error("Please select CSV file to import");
+            return;
+        }
+        
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const results = await adminService.uploadFileService(formData);
+            if (results && results.status === 201) {
+                window.location.reload();
+                toast.success(results.data.message)
+            }
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }
+    }
+    
     useEffect(() => {
         fetchEmployee();
     }, [])
@@ -35,7 +59,14 @@ const Employee = () => {
                 <div className='d-flex justify-content-center'>
                     <h3>Employee List</h3>
                 </div>
-                <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
+                <div className='d-flex justify-content-between'>
+                    <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
+                    <div>
+                        <label className='btn btn-primary me-2' htmlFor='import'>Import</label>
+                        <input type="file" id='import' onChange={(event) => importData(event)} hidden />
+                        <button className='btn btn-warning'>Export</button>
+                    </div>
+                </div>
             </div>
             <div className='mt-3'>
                 <table className="table table-hover border">

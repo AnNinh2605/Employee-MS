@@ -44,6 +44,10 @@ const getListAdminService = () => {
     return axios.get('/auth/listAdmin');
 }
 
+const uploadFileService = (formData) => {
+    return axios.post('/auth/upload', formData);
+}
+
 export default {
     addCategoryService,
     fetchCategoryService,
@@ -55,5 +59,6 @@ export default {
     countAdminService,
     countEmployeeService,
     countTotalSalaryService,
-    getListAdminService
+    getListAdminService,
+    uploadFileService
 }

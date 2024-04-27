@@ -1,7 +1,10 @@
+import fs from 'fs';
+import csv from 'csv-parser';
+import bcrypt from 'bcrypt';
+
 import CategoryModel from '../Models/CategoryModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import errorHandler from '../utils/errorHandler.js';
-import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
@@ -190,6 +193,51 @@ const getListAdmin = async (req, res) => {
     }
 }
 
+const uploadFile = async (req, res) => {
+    try {
+        const employeeData = [];
+        let hasError = false;
+
+        fs.createReadStream(req.file.path)
+            .pipe(csv())
+            .on('data', (data) => employeeData.push(data))
+            .on('end', async () => {
+                employeeData.forEach(data => {
+                    data.password = bcrypt.hashSync(data.password, saltRounds),
+                        data.category_id = "6628ee0124b826a68f788790",
+                        data.image = 'image-1714127404272.jpg',
+                        data.role = "employee"
+                })
+                for (const item of employeeData) {
+                    let check = await EmployeeModel.findOne({ email: item.email });
+                    if (check) {
+                        hasError = true;
+                        break; // Skip creating duplicate employee
+                    }
+                    else {
+                        await EmployeeModel.create(item);
+                    }
+                }
+                fs.unlinkSync(req.file.path); // Delete temporary file
+            });
+
+
+        if (hasError) {
+            return res.status(409).json({
+                status: "error",
+                message: "Data import is invalid",
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Created employee successfully",
+        });
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
 const AuthController = {
     addCategory,
     fetchCategory,
@@ -201,6 +249,7 @@ const AuthController = {
     getAdminCount,
     getEmployeeCount,
     getSalaryTotal,
-    getListAdmin
+    getListAdmin,
+    uploadFile
 }
 export default AuthController;
