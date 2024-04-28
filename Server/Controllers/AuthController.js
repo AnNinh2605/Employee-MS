@@ -74,7 +74,7 @@ const addEmployee = async (req, res) => {
 
 const fetchEmployee = async (req, res) => {
     try {
-        let results = await EmployeeModel.find({}, '-password');
+        let results = await EmployeeModel.find({}, "name email salary address image").lean();
         return res.status(200).json({
             status: "success",
             message: "Get employee successfully",

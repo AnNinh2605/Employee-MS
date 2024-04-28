@@ -1,12 +1,15 @@
 import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { CSVLink } from "react-csv";
 import './style.scss'
 
 import adminService from '../../Services/adminService.js';
 
 const Employee = () => {
     const [employee, setEmployee] = useState([]);
+    const [dataExport, setDataExport] = useState([]); //state to save data to export
+
     const fetchEmployee = async () => {
         let results = await adminService.fetchEmployeeService();
         if (results && results.status === 200) {
@@ -33,7 +36,7 @@ const Employee = () => {
             toast.error("Please select CSV file to import");
             return;
         }
-        
+
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
@@ -48,7 +51,22 @@ const Employee = () => {
             toast.error(error.response.data.message)
         }
     }
-    
+
+    const exportToCSV  = async (event, done) => {
+        if (!employee || employee.length === 0) {
+            toast.error("No data to export");
+            return;
+        }
+        
+        const results = employee.map((item) => {
+            let {_id, image, ...processingData} = item;
+            return processingData;
+        })
+
+        setDataExport(results);
+        done();
+    }
+
     useEffect(() => {
         fetchEmployee();
     }, [])
@@ -64,7 +82,15 @@ const Employee = () => {
                     <div>
                         <label className='btn btn-primary me-2' htmlFor='import'>Import</label>
                         <input type="file" id='import' onChange={(event) => importData(event)} hidden />
-                        <button className='btn btn-warning'>Export</button>
+                        <CSVLink
+                            data={dataExport}
+                            filename={"data.csv"}
+                            className="btn btn-warning"
+                            asyncOnClick={true}
+                            onClick={exportToCSV}
+                        >
+                            Export
+                        </CSVLink>
                     </div>
                 </div>
             </div>
