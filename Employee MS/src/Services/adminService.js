@@ -20,8 +20,8 @@ const editEmployeeService = (_id, employee) => {
     return axios.put(`/auth/editEmployee/${_id}`, employee);
 }
 
-const fetchEmployeeService = () => {
-    return axios.get('/auth/employee');
+const fetchEmployeeService = (itemsPerPage, itemOffset) => {
+    return axios.get(`/auth/employee?itemsPerPage=${itemsPerPage}&itemOffset=${itemOffset}`);
 }
 
 const deleteEmployeeService = (_id) => {

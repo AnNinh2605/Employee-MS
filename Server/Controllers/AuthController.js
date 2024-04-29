@@ -73,12 +73,28 @@ const addEmployee = async (req, res) => {
 }
 
 const fetchEmployee = async (req, res) => {
+    const { itemsPerPage, itemOffset } = req.query;
     try {
-        let results = await EmployeeModel.find({}, "name email salary address image").lean();
+        let query = EmployeeModel.find({}, "name email salary address image").lean();
+        if (!+itemsPerPage && !+itemOffset) {
+            const results = await query;
+            return res.status(200).json({
+                status: "success",
+                message: "Get employee successfully",
+                data: results
+            });
+        }
+        const totalCount = await EmployeeModel.countDocuments({});
+        const totalPage = Math.ceil(totalCount / itemsPerPage);
+
+        const results = await query.skip(itemOffset).limit(itemsPerPage);
         return res.status(200).json({
             status: "success",
             message: "Get employee successfully",
-            data: results
+            data: {
+                data: results,
+                totalPage
+            }
         })
     } catch (error) {
         return errorHandler(res, error);
