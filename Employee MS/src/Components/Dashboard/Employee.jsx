@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CSVLink } from "react-csv";
 import ReactPaginate from 'react-paginate';
+import _ from 'lodash'
 
 import './style.scss'
 
 import adminService from '../../Services/adminService.js';
 
 const Employee = () => {
-    const csvLinkRef = useRef(); 
+    const csvLinkRef = useRef();
 
     const [employee, setEmployee] = useState([]);
     const [dataExport, setDataExport] = useState([]); //state to save data to export
@@ -94,6 +95,12 @@ const Employee = () => {
         setItemOffset(newOffset);
     };
 
+    const handleSort = (Field, By) => {
+        let cloneListUser = _.cloneDeep(employee);
+        cloneListUser = _.orderBy(cloneListUser, [Field], [By]);
+        setEmployee(cloneListUser);
+    }
+
     useEffect(() => {
         fetchEmployee(itemsPerPage, itemOffset);
     }, [itemOffset])
@@ -130,7 +137,17 @@ const Employee = () => {
                                 <th scope="col">Image</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Address</th>
-                                <th scope="col">Salary</th>
+                                <th className='d-flex d-flex gap-1'>
+                                    <div role='button'>
+                                        <i className="pe-1 fa-solid fa-arrow-up-long"
+                                            onClick={() => handleSort('salary', 'asc')}
+                                        ></i>
+                                        <i className="fa-solid fa-arrow-down-long"
+                                            onClick={() => handleSort('salary', 'desc')}
+                                        ></i>
+                                    </div>
+                                    <span>Salary</span>
+                                </th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
