@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CSVLink } from "react-csv";
@@ -9,6 +9,8 @@ import './style.scss'
 import adminService from '../../Services/adminService.js';
 
 const Employee = () => {
+    const csvLinkRef = useRef(); 
+
     const [employee, setEmployee] = useState([]);
     const [dataExport, setDataExport] = useState([]); //state to save data to export
     const [itemOffset, setItemOffset] = useState(0); //itemOffset for paginate
@@ -61,7 +63,7 @@ const Employee = () => {
     const exportToCSV = async (event, done) => {
         try {
             const dataResponse = await adminService.fetchEmployeeService(0, 0);
-            
+
             if (!dataResponse || dataResponse.status !== 200) {
                 toast.error("Failed to fetch employee data");
                 return;
@@ -79,7 +81,8 @@ const Employee = () => {
             })
 
             setDataExport(results);
-            done();
+            setTimeout(() => { csvLinkRef.current.link.click(); }, 500)
+
         } catch (error) {
             console.error("Error exporting to CSV:", error);
             toast.error("An error occurred during export");
@@ -110,11 +113,11 @@ const Employee = () => {
                             <CSVLink
                                 data={dataExport}
                                 filename={"data.csv"}
-                                className="btn btn-warning"
                                 asyncOnClick={true}
-                                onClick={exportToCSV}
-                            >Export
+                                ref={csvLinkRef}
+                            >
                             </CSVLink>
+                            <button className="btn btn-warning" onClick={exportToCSV}>Export</button>
                         </div>
                     </div>
                 </div>
