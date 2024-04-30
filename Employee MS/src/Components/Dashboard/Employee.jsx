@@ -31,12 +31,26 @@ const Employee = () => {
     }
 
     const handleDeleteEmployee = async (_id) => {
-        let results = await adminService.deleteEmployeeService(_id);
-        if (results && results.status === 204) {
-            window.location.reload();
+        const confirmDelete = window.confirm("Are you sure you want to delete this employee?");
+
+        if (!confirmDelete) {
+            return;
         }
-        else {
-            //error
+
+        try {
+            let results = await adminService.deleteEmployeeService(_id);
+
+            if (results && results.status === 204) {
+                const updatedEmployees = employee.filter(employee => employee._id !== _id);
+                setEmployee(updatedEmployees);
+
+                toast.success("Employee deleted successful");
+            } else {
+                toast.error("Failed to delete employee");
+            }
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+            toast.error("An error occurred while deleting employee");
         }
     }
 
