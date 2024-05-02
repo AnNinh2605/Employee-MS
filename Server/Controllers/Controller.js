@@ -1,50 +1,51 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import EmployeeModel from '../Models/EmployeeModel.js';
+import AdminModel from '../Models/AdminModel.js'
 import errorHandler from '../utils/errorHandler.js';
 
 const login = async (req, res) => {
-    let { email, password } = req.body;
-    if (!email || !password){
+    const { username, password } = req.body;
+
+    if (!username || !password) {
         return res.status(400).json({
             status: "error",
             message: "Missing information",
         });
     }
+
     try {
-        let findEmail = await EmployeeModel.find({ email: email })
-        if (findEmail && findEmail.length > 0) {
-            let isTruePassword = bcrypt.compareSync(password, findEmail[0].password);
-            if (isTruePassword) {
-                let payload = {
-                    _id: findEmail[0]._id,
-                    email: findEmail[0].email,
-                    role: findEmail[0].role
-                }
-                let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
-                res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
-                return res.status(200).json({
-                    status: "success",
-                    message: "Login successfully",
-                    data: {
-                        access_token: token
-                    }
-                });
-            }
-            else {
-                return res.status(401).json({
-                    status: "error",
-                    message: "Email/ password is not correct",
-                });
-            }
-        }
-        else {
+        const admin = await AdminModel.findOne({ username })
+        if (!admin) {
             return res.status(401).json({
                 status: "error",
-                message: "Email is not existing",
+                message: "Username is not existing",
             });
         }
+
+        const isTruePassword = bcrypt.compareSync(password, admin.password);
+        if (!isTruePassword) {
+            return res.status(401).json({
+                status: "error",
+                message: "Username/password is not correct",
+            });
+        }
+
+        let payload = {
+            _id: admin._id,
+            email: admin.username,
+            role: admin.role
+        }
+        let token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
+        res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
+
+        return res.status(200).json({
+            status: "success",
+            message: "Login successfully",
+            data: {
+                access_token: token
+            }
+        });
     } catch (error) {
         return errorHandler(res, error);
     }

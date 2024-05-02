@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify';
 
 import './Login.scss'
 
@@ -12,7 +13,7 @@ const Login = () => {
     const dispatch = useDispatch();
 
     const [inputLogin, setInputLogin] = useState({
-        email: '',
+        username: '',
         password: ''
     })
 
@@ -20,29 +21,34 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        if (!inputLogin.email || !inputLogin.password) {
-            alert('Missing email/ password');
+
+        if (!inputLogin.username || !inputLogin.password) {
+            toast.error('Missing username/ password');
             return;
         }
+
         try {
             let results = await commonService.loginService(inputLogin);
+
             if (results && results.status === 200) {
-                let token = results.data.data.access_token
+                let token = results.data.data.access_token;
                 let decodedToken = jwtDecode(token);
+
                 if (decodedToken.role === "admin") {
                     navigate('/dashboard');
-                }
-                else {
+                } else {
                     navigate(`/employeeDetail/${decodedToken._id}`);
                 }
+
                 dispatch({
-                    type:'LOGIN_SUCCESS',
+                    type: 'LOGIN_SUCCESS',
                     payload: decodedToken
                 })
-                localStorage.setItem("access_token", results.data.data.access_token);
+
+                localStorage.setItem("access_token", token);
             }
         } catch (error) {
-            let errorMS = error.response.data.message;
+            let errorMS = error.response ? error.response.data.message : 'An error occurred';
             setError(errorMS);
         }
     }
@@ -53,10 +59,10 @@ const Login = () => {
                 <h2>Login Page</h2>
                 <form onSubmit={(event) => handleLogin(event)}>
                     <div className="form-group mb-2">
-                        <label htmlFor="email"><strong>Email: </strong></label>
-                        <input type="email" className="form-control" id="email"
-                            placeholder="Email" autoComplete='on' required
-                            onChange={(event) => setInputLogin({ ...inputLogin, email: event.target.value })}
+                        <label htmlFor="username"><strong>Username: </strong></label>
+                        <input type="text" className="form-control" id="username"
+                            placeholder="Username" autoComplete='on' required
+                            onChange={(event) => setInputLogin({ ...inputLogin, username: event.target.value })}
                         ></input>
                     </div>
                     <div className="form-group mb-2">
