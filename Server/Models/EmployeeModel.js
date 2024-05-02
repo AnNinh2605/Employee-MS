@@ -16,22 +16,29 @@ const employeeSchema = new Schema(
             unique: true,
             required: [true, "email is required"]
         },
-        password: {
+        phone: {
             type: String,
-            required: [true, "password is required"]
         },
-        salary: Number,
+        DOB: {
+            type: Date
+        },
         address: String,
-        image: String,
-        category_id: {
+        department_id: {
             type: Schema.Types.ObjectId,
-            ref: 'CategoryModel'
+            ref: 'DepartmentModel'
         },
-        role: String
-    }, 
+        position_id: {
+            type: Schema.Types.ObjectId,
+            ref: 'PositionModel'
+        },
+        start_date: {
+            type: Date
+        },
+        salary: Number
+    }
 );
 
-employeeSchema.plugin(AutoIncrement, { inc_field: 'employee_id' });
+employeeSchema.plugin(AutoIncrement, { inc_field: '_id' });
 
 const EmployeeModel = mongoose.model('Employee', employeeSchema);
 
