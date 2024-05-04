@@ -2,8 +2,9 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import bcrypt from 'bcrypt';
 
-import CategoryModel from '../Models/CategoryModel.js';
+import DepartmentModel from '../Models/DepartmentModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
+import PositionModel from '../Models/PositionModel.js';
 import errorHandler from '../utils/errorHandler.js';
 
 const saltRounds = 10;
@@ -29,12 +30,41 @@ const addCategory = async (req, res) => {
     }
 }
 
-const fetchCategory = async (req, res) => {
+const fetchDepartment = async (req, res) => {
     try {
-        let results = await CategoryModel.find();
+        const results = await DepartmentModel.find();
+        
+        if (!results || results.length === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "No departments found"
+            });
+        }
+
         return res.status(200).json({
             status: "success",
-            message: "Get category successfully",
+            message: "Get department successfully",
+            data: results
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
+const fetchPosition = async (req, res) => {
+    try {
+        const results = await PositionModel.find();
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "No positions found"
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Get position successfully",
             data: results
         })
     } catch (error) {
@@ -43,26 +73,32 @@ const fetchCategory = async (req, res) => {
 }
 
 const addEmployee = async (req, res) => {
-    let { name, email, password, salary, address, category_id } = req.body
-    //check if missing name, email, password
-    if (!name || !email || !password) {
+    let { name, email, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
+
+    if (!name || !email || !phone || !salary || !address || !department_id || !dob || !position_id || !start_date) {
         return res.status(400).json({
             status: "error",
             message: "Request body is missing",
         })
     }
+
     try {
-        let filename = req.file.filename;
-        await EmployeeModel.create({
-            name,
-            email,
-            password: bcrypt.hashSync(password, saltRounds),
-            salary,
-            address,
-            category_id,
-            image: filename,
-            role: "employee"
-        });
+        const existingEmployee = await EmployeeModel.findOne({ email });
+        if (existingEmployee) {
+            return res.status(409).json({
+                status: "error",
+                message: "Email already exists, try another one"
+            });
+        }
+
+        const employee = await EmployeeModel.create(req.body);
+        if (!employee) {
+            return res.status(500).json({
+                status: "error",
+                message: "Failed to create employee",
+            });
+        }
+
         return res.status(201).json({
             status: "success",
             message: "Created employee successfully",
@@ -256,7 +292,8 @@ const uploadFile = async (req, res) => {
 
 const AuthController = {
     addCategory,
-    fetchCategory,
+    fetchDepartment,
+    fetchPosition,
     addEmployee,
     fetchEmployee,
     fetchEmployeeById,

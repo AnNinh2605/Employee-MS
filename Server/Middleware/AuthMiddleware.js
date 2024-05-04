@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken'
-import EmployeeModel from '../Models/EmployeeModel.js';
+import AdminModel from '../Models/AdminModel.js';
 
 // check validate account 
 const tokenMiddleware = (req, res, next) => {
     try {
-        let headerToken = req.headers.authorization;
-        let token = headerToken.split(" ")[1];
-        let decodedToken = jwt.verify(token, process.env.JWT_KEY);
+        const headerToken = req.headers.authorization;
+        const token = headerToken.split(" ")[1];
+        const decodedToken = jwt.verify(token, process.env.JWT_KEY);
         req.userId = decodedToken._id;
         if (decodedToken) {
             next();
@@ -20,9 +20,9 @@ const tokenMiddleware = (req, res, next) => {
 }
 
 const isAdmin = async (req, res, next) => {
-    let _id = req.userId;
+    const _id = req.userId;
     try {
-        let results = await EmployeeModel.findById(_id);
+        const results = await AdminModel.findById(_id);
         if (results && results.role === 'admin') {
             next();
         }

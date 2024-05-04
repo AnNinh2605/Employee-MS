@@ -19,9 +19,12 @@ router.post('/addEmployee', uploadImage.single('image'), AuthController.addEmplo
 router.put('/editEmployee/:_id', AuthController.editEmployee)
 router.delete('/deleteEmployee/:_id', AuthController.deleteEmployee)
 
-// category page route
-router.get('/category', AuthController.fetchCategory)
+// department route
+router.get('/department', AuthController.fetchDepartment)
 router.post('/addCategory', AuthController.addCategory)
+
+// position route
+router.get('/position', AuthController.fetchPosition)
 
 //upload file 
 router.post('/upload', uploadFile.single('file'), AuthController.uploadFile)

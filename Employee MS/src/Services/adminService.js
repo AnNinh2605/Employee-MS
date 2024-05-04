@@ -4,12 +4,16 @@ const addCategoryService = (category) => {
     return axios.post('/auth/addCategory', { category });
 }
 
-const fetchCategoryService = () => {
-    return axios.get('/auth/category');
+const fetchDepartmentService = () => {
+    return axios.get('/auth/department');
 }
 
-const addEmployeeService = (formData) => {
-    return axios.post('/auth/addEmployee', formData);
+const fetchPositionService = () => {
+    return axios.get('/auth/position');
+}
+
+const addEmployeeService = (employeeData) => {
+    return axios.post('/auth/addEmployee', employeeData);
 }
 
 const fetchEmployeeByIdService = (_id) => {
@@ -50,7 +54,8 @@ const uploadFileService = (formData) => {
 
 export default {
     addCategoryService,
-    fetchCategoryService,
+    fetchDepartmentService,
+    fetchPositionService,
     addEmployeeService,
     fetchEmployeeByIdService,
     editEmployeeService,
