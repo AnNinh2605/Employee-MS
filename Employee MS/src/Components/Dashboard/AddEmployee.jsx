@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import adminService from '../../Services/adminService.js';
+import validation from '../../utils/validations.js'
 
 const AddEmployee = () => {
     const navigate = useNavigate();
@@ -66,13 +67,18 @@ const AddEmployee = () => {
 
     const handleAddEmployee = async (event) => {
         event.preventDefault();
-        try {
-            const results = await adminService.addEmployeeService(employeeInfor);
 
-            toast.success(results.data.message);
-            navigate('/dashboard/employee');
-        } catch (error) {
-            toast.error('Add employee error: ' + error.response.data.message);
+        const validate = validation.dateValidation(employeeInfor);
+        
+        if(validate){
+            try {
+                const results = await adminService.addEmployeeService(employeeInfor);
+    
+                toast.success(results.data.message);
+                navigate('/dashboard/employee');
+            } catch (error) {
+                toast.error('Add employee error: ' + error.response.data.message);
+            }
         }
     }
 
