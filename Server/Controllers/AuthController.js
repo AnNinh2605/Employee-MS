@@ -33,7 +33,7 @@ const addCategory = async (req, res) => {
 const fetchDepartment = async (req, res) => {
     try {
         const results = await DepartmentModel.find();
-        
+
         if (!results || results.length === 0) {
             return res.status(404).json({
                 status: "error",
@@ -110,20 +110,23 @@ const addEmployee = async (req, res) => {
 
 const fetchEmployee = async (req, res) => {
     const { itemsPerPage, itemOffset } = req.query;
+
     try {
-        let query = EmployeeModel.find({}, "name email salary address image").lean();
+        const query = EmployeeModel.find({}, "-id -__v").populate('department_id', '-_id').populate('position_id', '-_id').lean();
+            
         if (!+itemsPerPage && !+itemOffset) {
-            const results = await query;
+            const results = await query.exec();
             return res.status(200).json({
                 status: "success",
                 message: "Get employee successfully",
                 data: results
             });
         }
+
         const totalCount = await EmployeeModel.countDocuments({});
         const totalPage = Math.ceil(totalCount / itemsPerPage);
 
-        const results = await query.skip(itemOffset).limit(itemsPerPage);
+        const results = await query.skip(+itemOffset).limit(+itemsPerPage).exec();
         return res.status(200).json({
             status: "success",
             message: "Get employee successfully",

@@ -20,13 +20,13 @@ const Employee = () => {
     const itemsPerPage = 10; //itemsPerPage for paginate
 
     const fetchEmployee = async (itemsPerPage, itemOffset) => {
-        let results = await adminService.fetchEmployeeService(itemsPerPage, itemOffset);
-        if (results && results.status === 200) {
+        try {
+            const results = await adminService.fetchEmployeeService(itemsPerPage, itemOffset);
+            
             setEmployee(results.data.data.data);
             setTotalPage(results.data.data.totalPage);
-        }
-        else {
-            //error
+        } catch (error) {
+            toast.error('Fetch employee error: ' + error.response.data.message);
         }
     }
 
@@ -75,7 +75,7 @@ const Employee = () => {
         }
     }
 
-    const exportToCSV = async (event, done) => {
+    const exportToCSV = async () => {
         try {
             const dataResponse = await adminService.fetchEmployeeService(0, 0);
 
@@ -148,9 +148,8 @@ const Employee = () => {
                             <tr>
                                 <th scope="col">No.</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Address</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Position</th>
                                 <th className='d-flex d-flex gap-1'>
                                     <div role='button'>
                                         <i className="pe-1 fa-solid fa-arrow-up-long"
@@ -171,9 +170,8 @@ const Employee = () => {
                                     <tr key={`employee-${index}`}>
                                         <td>{itemOffset + index + 1}</td>
                                         <td>{item.name}</td>
-                                        <td><img src={`http://localhost:3000/Images/${item.image}`} className='employee_image'></img></td>
-                                        <td>{item.email}</td>
-                                        <td>{item.address}</td>
+                                        <td>{item.department_id.name}</td>
+                                        <td>{item.position_id.name}</td>
                                         <td>{item.salary}</td>
                                         <td>
                                             <Link to={`/dashboard/edit_employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
