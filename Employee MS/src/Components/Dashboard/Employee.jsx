@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CSVLink } from "react-csv";
@@ -19,11 +19,23 @@ const Employee = () => {
 
     const itemsPerPage = 10; //itemsPerPage for paginate
 
+    const formatDateString = (dateString) => {
+        return dateString.slice(0, 10).split("-").reverse().join('-');
+    }
+
     const fetchEmployee = async (itemsPerPage, itemOffset) => {
         try {
             const results = await adminService.fetchEmployeeService(itemsPerPage, itemOffset);
-            
-            setEmployee(results.data.data.data);
+
+            const dataEmployee = results.data.data.data;
+
+            const newListUser = dataEmployee.map(row => ({
+                ...row,
+                dob: formatDateString(row.dob),
+                start_date: formatDateString(row.start_date)
+            }));
+
+            setEmployee(newListUser);
             setTotalPage(results.data.data.totalPage);
         } catch (error) {
             toast.error('Fetch employee error: ' + error.response.data.message);
@@ -115,6 +127,21 @@ const Employee = () => {
         setEmployee(cloneListUser);
     }
 
+    const toggleChildRow = (_id) => {
+        const newListUser = employee.map(row => {
+            const formatDate = {
+                ...row,
+            }
+
+            if (row._id === _id) {
+                formatDate.isChildRowVisible = !row.isChildRowVisible;
+            }
+
+            return formatDate;
+        })
+        setEmployee(newListUser);
+    };
+
     useEffect(() => {
         fetchEmployee(itemsPerPage, itemOffset);
     }, [itemOffset])
@@ -161,23 +188,58 @@ const Employee = () => {
                                     </div>
                                     <span>Salary</span>
                                 </th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Detail</th>
                             </tr>
                         </thead>
                         <tbody>
                             {employee.map((item, index) => {
                                 return (
-                                    <tr key={`employee-${index}`}>
-                                        <td>{itemOffset + index + 1}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.department_id.name}</td>
-                                        <td>{item.position_id.name}</td>
-                                        <td>{item.salary}</td>
-                                        <td>
-                                            <Link to={`/dashboard/edit_employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
-                                            <button className='btn btn-danger btn-sm' onClick={() => handleDeleteEmployee(item._id)}>Delete</button>
-                                        </td>
-                                    </tr>
+                                    <React.Fragment key={`employee-${index}`}>
+                                        <tr>
+                                            <td>{itemOffset + index + 1}</td>
+                                            <td>{item.name}</td>
+                                            <td>{item.department_id.name}</td>
+                                            <td>{item.position_id.name}</td>
+                                            <td>{item.salary}</td>
+                                            <td>
+                                                <button className="btn btn-success btn-sm"
+                                                    onClick={() => toggleChildRow(item._id)}>
+                                                    {item.isChildRowVisible ? 'Less' : 'More'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {item.isChildRowVisible && (
+                                            <React.Fragment key={`employee-child-${index}`}>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Email</th>
+                                                    <th scope="col">Phone</th>
+                                                    <th scope="col">DOB</th>
+                                                    <th colSpan={2} scope="col" className='text-center'>Action</th>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>{item.email}</td>
+                                                    <td>{item.phone}</td>
+                                                    <td>{item.dob}</td>
+                                                    <td colSpan="2" rowSpan={3} className='border text-center align-middle'>
+                                                        <Link to={`/dashboard/edit_employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
+                                                        <button className='btn btn-danger btn-sm' onClick={() => handleDeleteEmployee(item._id)}>Delete</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Address</th>
+                                                    <th colSpan="2" scope="col">Start date</th>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>{item.address}</td>
+                                                    <td colSpan="2">{item.start_date}</td>
+                                                </tr>
+                                            </React.Fragment>
+                                        )}
+                                    </React.Fragment>
                                 )
                             })}
                         </tbody>
