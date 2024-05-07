@@ -19,7 +19,7 @@ const Employee = () => {
 
     const itemsPerPage = 10; //itemsPerPage for paginate
 
-    const formatDateString = (dateString) => {
+    const formatDateTo_ddmmyyyy = (dateString) => {
         return dateString.slice(0, 10).split("-").reverse().join('-');
     }
 
@@ -31,8 +31,8 @@ const Employee = () => {
 
             const newListUser = dataEmployee.map(row => ({
                 ...row,
-                dob: formatDateString(row.dob),
-                start_date: formatDateString(row.start_date)
+                dob: formatDateTo_ddmmyyyy(row.dob),
+                start_date: formatDateTo_ddmmyyyy(row.start_date)
             }));
 
             setEmployee(newListUser);
@@ -52,16 +52,11 @@ const Employee = () => {
         try {
             let results = await adminService.deleteEmployeeService(_id);
 
-            if (results && results.status === 204) {
-                const updatedEmployees = employee.filter(employee => employee._id !== _id);
-                setEmployee(updatedEmployees);
-
-                toast.success("Employee deleted successful");
-            } else {
-                toast.error("Failed to delete employee");
-            }
+            const updatedEmployees = employee.filter(employee => employee._id !== _id);
+            setEmployee(updatedEmployees);
+            
+            toast.success(results.data.message);
         } catch (error) {
-            console.error("Error deleting employee:", error);
             toast.error("An error occurred while deleting employee");
         }
     }

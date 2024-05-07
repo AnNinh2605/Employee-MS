@@ -162,7 +162,7 @@ const editEmployee = async (req, res) => {
     if (req.body.email) {
         delete req.body.email;
     }
-    
+
     const { name, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
 
     if (!name || !phone || !salary || !address || !department_id || !dob || !position_id || !start_date) {
@@ -182,7 +182,7 @@ const editEmployee = async (req, res) => {
             });
         }
 
-        return res.status(204).json({
+        return res.status(200).json({
             status: "success",
             message: "Updated employee successfully",
         })
@@ -192,10 +192,19 @@ const editEmployee = async (req, res) => {
 }
 
 const deleteEmployee = async (req, res) => {
-    let _id = req.params._id;
+    const _id = req.params._id;
+
     try {
-        await EmployeeModel.deleteOne({ _id: _id });
-        return res.status(204).json({
+        const results = await EmployeeModel.findByIdAndDelete(_id);
+
+        if (!results) {
+            return res.status(500).json({
+                status: "error",
+                message: "Failed to delete employee",
+            });
+        }
+
+        return res.status(200).json({
             status: "success",
             message: "Deleted employee successfully",
         })
