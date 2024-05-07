@@ -91,8 +91,8 @@ const addEmployee = async (req, res) => {
             });
         }
 
-        const employee = await EmployeeModel.create(req.body);
-        if (!employee) {
+        const results = await EmployeeModel.create(req.body);
+        if (!results) {
             return res.status(500).json({
                 status: "error",
                 message: "Failed to create employee",
@@ -113,7 +113,7 @@ const fetchEmployee = async (req, res) => {
 
     try {
         const query = EmployeeModel.find({}, "-id -__v").populate('department_id', '-_id').populate('position_id', '-_id').lean();
-            
+
         if (!+itemsPerPage && !+itemOffset) {
             const results = await query.exec();
             return res.status(200).json({
@@ -142,8 +142,10 @@ const fetchEmployee = async (req, res) => {
 
 const fetchEmployeeById = async (req, res) => {
     let _id = req.params._id;
+
     try {
-        let results = await EmployeeModel.findById(_id, '-password -image');
+        const results = await EmployeeModel.findById(_id, '-id -__v');
+
         return res.status(200).json({
             status: "success",
             message: "Get employee successfully",
@@ -155,18 +157,31 @@ const fetchEmployeeById = async (req, res) => {
 }
 
 const editEmployee = async (req, res) => {
-    let { name, email, salary, address, category_id } = req.body
-    let _id = req.params._id;
+    const _id = req.params._id;
+
+    if (req.body.email) {
+        delete req.body.email;
+    }
+    
+    const { name, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
+
+    if (!name || !phone || !salary || !address || !department_id || !dob || !position_id || !start_date) {
+        return res.status(400).json({
+            status: "error",
+            message: "Request body is missing",
+        })
+    }
+
     try {
-        await EmployeeModel.findByIdAndUpdate(_id,
-            {
-                name,
-                email,
-                salary,
-                address,
-                category_id,
-            }
-        );
+        const results = await EmployeeModel.findByIdAndUpdate(_id, req.body);
+
+        if (!results) {
+            return res.status(500).json({
+                status: "error",
+                message: "Failed to update employee",
+            });
+        }
+
         return res.status(204).json({
             status: "success",
             message: "Updated employee successfully",
