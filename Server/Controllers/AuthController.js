@@ -1,13 +1,10 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import bcrypt from 'bcrypt';
 
 import DepartmentModel from '../Models/DepartmentModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import PositionModel from '../Models/PositionModel.js';
 import errorHandler from '../utils/errorHandler.js';
-
-const saltRounds = 10;
 
 const addCategory = async (req, res) => {
     if (!req.body) {
@@ -281,14 +278,9 @@ const uploadFile = async (req, res) => {
             .pipe(csv())
             .on('data', (data) => employeeData.push(data))
             .on('end', async () => {
-                employeeData.forEach(data => {
-                    data.password = bcrypt.hashSync(data.password, saltRounds),
-                        data.category_id = "6628ee0124b826a68f788790",
-                        data.image = 'image-1714127404272.jpg',
-                        data.role = "employee"
-                })
                 for (const item of employeeData) {
-                    let check = await EmployeeModel.findOne({ email: item.email });
+                    const check = await EmployeeModel.findOne({ email: item.email });
+
                     if (check) {
                         hasError = true;
                         break; // Skip creating duplicate employee
@@ -317,6 +309,48 @@ const uploadFile = async (req, res) => {
     }
 }
 
+const searchEmployee = async (req, res) => {
+    const { name, position_id, department_id, itemsPerPage} = req.query;
+    const queryCondition = {};
+
+    if (name) {
+        // regex to find correct names and approximate names
+        queryCondition.name = { $regex: `${name}`, $options: 'i' };
+    }
+    
+    if (position_id) {
+        queryCondition.position_id = position_id;
+    }
+    
+    if (department_id) {
+        queryCondition.department_id = department_id;
+    }
+    
+    try {
+        // count total page
+        const dataCount = await EmployeeModel.countDocuments(queryCondition);
+        const totalPage = Math.ceil(dataCount / itemsPerPage);
+
+        // paginate data
+        const results = await EmployeeModel.find(queryCondition)
+        .populate('department_id', '-_id')
+        .populate('position_id', '-_id')
+        .limit(+itemsPerPage)
+        .lean();
+
+        return res.status(200).json({
+            status: "success",
+            message: "Search employee successfully",
+            data: {
+                data: results,
+                totalPage
+            }
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
 const AuthController = {
     addCategory,
     fetchDepartment,
@@ -330,6 +364,8 @@ const AuthController = {
     getEmployeeCount,
     getSalaryTotal,
     getListAdmin,
-    uploadFile
+    uploadFile,
+    searchEmployee
 }
+
 export default AuthController;

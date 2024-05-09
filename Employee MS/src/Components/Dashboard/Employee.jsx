@@ -13,11 +13,21 @@ const Employee = () => {
     const csvLinkRef = useRef();
 
     const [employee, setEmployee] = useState([]);
+    const [department, setDepartment] = useState([]);
+    const [position, setPosition] = useState([]);
+
+    const [searchInfor, setSearchInfor] = useState({
+        name: '',
+        position_id: '',
+        department_id: ''
+    })
+
     const [dataExport, setDataExport] = useState([]); //state to save data to export
     const [itemOffset, setItemOffset] = useState(0); //itemOffset for paginate
+    const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
 
-    const itemsPerPage = 10; //itemsPerPage for paginate
+    const itemsPerPage = 6; //itemsPerPage for paginate
 
     const formatDateTo_ddmmyyyy = (dateString) => {
         return dateString.slice(0, 10).split("-").reverse().join('-');
@@ -54,7 +64,7 @@ const Employee = () => {
 
             const updatedEmployees = employee.filter(employee => employee._id !== _id);
             setEmployee(updatedEmployees);
-            
+
             toast.success(results.data.message);
         } catch (error) {
             toast.error("An error occurred while deleting employee");
@@ -73,10 +83,11 @@ const Employee = () => {
 
         try {
             const results = await adminService.uploadFileService(formData);
-            if (results && results.status === 201) {
+
+            toast.success(results.data.message);
+            setTimeout(function () {
                 window.location.reload();
-                toast.success(results.data.message)
-            }
+            }, 3000);
         } catch (error) {
             toast.error(error.response.data.message)
         }
@@ -111,10 +122,12 @@ const Employee = () => {
         }
     }
 
-    const handlePageChange = (event) => {
-        const newOffset = (event.selected * itemsPerPage);
+    const handlePageChange = (selected) => {
+        const newOffset = (selected * itemsPerPage);
+
+        setCurrentPage(selected);
         setItemOffset(newOffset);
-    };
+    }
 
     const handleSort = (Field, By) => {
         let cloneListUser = _.cloneDeep(employee);
@@ -135,9 +148,57 @@ const Employee = () => {
             return formatDate;
         })
         setEmployee(newListUser);
-    };
+    }
+
+    const handleSearch = async (event) => {
+        event.preventDefault();
+
+        const { name, position_id, department_id } = searchInfor;
+
+        // reset to page 1 when empty input for search
+        if (!name && !position_id && !department_id) {
+            fetchEmployee(itemsPerPage, 0);
+            handlePageChange(0);
+            return;
+        }
+
+        try {
+            const results = await adminService.searchEmployeeService(name, position_id, department_id, itemsPerPage);
+
+            const responseData = results.data.data;
+
+            setEmployee(responseData.data);
+            setTotalPage(responseData.totalPage);
+        } catch (error) {
+            toast.error('Error fetching position data: ' + error.response.data.message);
+        }
+    }
+
+    const fetchDepartment = async () => {
+        try {
+            const results = await adminService.fetchDepartmentService();
+
+            const data = results.data.data;
+            setDepartment(data);
+        } catch (error) {
+            toast.error('Error fetching department data: ' + error.response.data.message);
+        }
+    }
+
+    const fetchPosition = async () => {
+        try {
+            const results = await adminService.fetchPositionService();
+
+            const data = results.data.data;
+            setPosition(data);
+        } catch (error) {
+            toast.error('Error fetching position data: ' + error.response.data.message);
+        }
+    }
 
     useEffect(() => {
+        fetchDepartment();
+        fetchPosition();
         fetchEmployee(itemsPerPage, itemOffset);
     }, [itemOffset])
 
@@ -145,14 +206,16 @@ const Employee = () => {
         <>
             <div className='px-5'>
                 <div className='mt-3'>
-                    <div className='d-flex justify-content-center'>
-                        <h3>Employee List</h3>
+                    <div className='text-center'>
+                        <h4>Employee List</h4>
                     </div>
                     <div className='d-flex justify-content-between'>
                         <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
-                        <div>
+
+                        <div className='d-flex'>
                             <label className='btn btn-primary me-2' htmlFor='import'>Import</label>
                             <input type="file" id='import' onChange={(event) => importData(event)} hidden />
+
                             <CSVLink
                                 data={dataExport}
                                 filename={"data.csv"}
@@ -163,8 +226,42 @@ const Employee = () => {
                             <button className="btn btn-warning" onClick={exportToCSV}>Export</button>
                         </div>
                     </div>
+                    <div className='mt-2'>
+                        <form onSubmit={handleSearch} className='d-flex justify-content-between gap-2'>
+                            <div className="input-group">
+                                <input type="search" className="form-control w-auto" id='name'
+                                    placeholder="Type your keywords..."
+                                    onChange={event =>
+                                        setSearchInfor({ ...searchInfor, name: event.target.value })}
+                                ></input>
+                            </div>
+                            <select className='form-select'
+                                onChange={(event) =>
+                                    setSearchInfor({ ...searchInfor, department_id: event.target.value })}>
+                                <option value="">Select department</option>
+                                {department.map((item, index) => {
+                                    return (
+                                        <option key={`department-${index}`} value={item._id}>{item.name}</option>
+                                    )
+                                })}
+                            </select>
+                            <select className='form-select'
+                                onChange={(event) =>
+                                    setSearchInfor({ ...searchInfor, position_id: event.target.value })}>
+                                <option value="">Select position</option>
+                                {position.map((item, index) => {
+                                    return (
+                                        <option key={`position-${index}`} value={item._id}>{item.name}</option>
+                                    )
+                                })}
+                            </select>
+                            <button type="submit" className="btn btn-secondary border px-4">
+                                <i className="fa fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div className='mt-3'>
+                <div className='mt-2'>
                     <table className="table table-hover border">
                         <thead>
                             <tr>
@@ -241,27 +338,30 @@ const Employee = () => {
                     </table>
                 </div>
             </div>
-            <ReactPaginate
-                nextLabel="next >"
-                onPageChange={(event) => handlePageChange(event)}
-                pageRangeDisplayed={3}
-                marginPagesDisplayed={2}
-                pageCount={totalPage}
+            <footer>
+                <ReactPaginate
+                    nextLabel="next>"
+                    onPageChange={(event) => handlePageChange(event.selected)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={2}
+                    pageCount={totalPage}
+                    forcePage={currentPage}
 
-                previousLabel="< previous"
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                breakLabel="..."
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                containerClassName="pagination justify-content-center"
-                activeClassName="active"
-                renderOnZeroPageCount={null}
-            />
+                    previousLabel="< previous"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakLabel="..."
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    containerClassName="pagination justify-content-center mb-0"
+                    activeClassName="active"
+                    renderOnZeroPageCount={null}
+                />
+            </footer>
         </>
     );
 }

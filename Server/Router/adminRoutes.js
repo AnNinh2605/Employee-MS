@@ -18,6 +18,7 @@ router.get('/employee/:_id', AuthController.fetchEmployeeById)
 router.post('/addEmployee', uploadImage.single('image'), AuthController.addEmployee)
 router.put('/editEmployee/:_id', AuthController.editEmployee)
 router.delete('/deleteEmployee/:_id', AuthController.deleteEmployee)
+router.get('/search', AuthController.searchEmployee)
 
 // department route
 router.get('/department', AuthController.fetchDepartment)

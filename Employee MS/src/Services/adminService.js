@@ -52,6 +52,10 @@ const uploadFileService = (formData) => {
     return axios.post('/auth/upload', formData);
 }
 
+const searchEmployeeService = (name, position_id, department_id, itemsPerPage) => {
+    return axios.get(`/auth/search?name=${name}&position_id=${position_id}&department_id=${department_id}&itemsPerPage=${itemsPerPage}`);
+}
+
 export default {
     addCategoryService,
     fetchDepartmentService,
@@ -65,5 +69,6 @@ export default {
     countEmployeeService,
     countTotalSalaryService,
     getListAdminService,
-    uploadFileService
+    uploadFileService,
+    searchEmployeeService
 }
