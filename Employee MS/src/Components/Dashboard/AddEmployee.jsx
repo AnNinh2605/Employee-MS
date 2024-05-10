@@ -22,6 +22,9 @@ const AddEmployee = () => {
         start_date: ""
     });
 
+    //state for selecting position base on department
+    const [selectedDepartment, setSelectedDepartment] = useState('');
+
     const fetchDepartment = async () => {
         try {
             const results = await adminService.fetchDepartmentService();
@@ -69,17 +72,25 @@ const AddEmployee = () => {
         event.preventDefault();
 
         const validate = validation.dateValidation(employeeInfor);
-        
-        if(validate){
+
+        if (validate) {
             try {
                 const results = await adminService.addEmployeeService(employeeInfor);
-    
+
                 toast.success(results.data.message);
                 navigate('/dashboard/employee');
             } catch (error) {
                 toast.error('Add employee error: ' + error.response.data.message);
             }
         }
+    }
+
+    // select department in search input
+    const handleDepartmentChange = (event) => {
+        const selectedDepartment = event.target.value;
+
+        setEmployeeInfor({ ...employeeInfor, department_id: selectedDepartment });
+        setSelectedDepartment(selectedDepartment);
     }
 
     useEffect(() => {
@@ -134,7 +145,6 @@ const AddEmployee = () => {
                             id="inputPhone"
                             placeholder="Enter phone number"
                             autoComplete='off'
-                            // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                             required
                             onChange={(event) =>
                                 setEmployeeInfor({ ...employeeInfor, phone: event.target.value })
@@ -176,7 +186,8 @@ const AddEmployee = () => {
                             Department
                         </label>
                         <select name="department" id="department" className="form-select"
-                            onChange={(event) => setEmployeeInfor({ ...employeeInfor, department_id: event.target.value })}>
+                            value={selectedDepartment}
+                            onChange={handleDepartmentChange}>
                             <option value="">Select department</option>
                             {department.map((item, index) => {
                                 return <option key={`department-${index}`} value={item._id}>{item.name}</option>;
@@ -190,8 +201,12 @@ const AddEmployee = () => {
                         <select name="position" id="position" className="form-select"
                             onChange={(event) => setEmployeeInfor({ ...employeeInfor, position_id: event.target.value })}>
                             <option value="">Select position</option>
-                            {position.map((item, index) => {
-                                return <option key={`position-${index}`} value={item._id}>{item.name}</option>;
+                            {selectedDepartment && position.map((item, index) => {
+                                if (item.department_id === selectedDepartment) {
+                                    return (
+                                        <option key={`position-${index}`} value={item._id}>{item.name}</option>
+                                    )
+                                }
                             })}
                         </select>
                     </div>

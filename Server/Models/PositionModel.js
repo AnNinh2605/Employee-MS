@@ -6,6 +6,10 @@ const positionSchema = new Schema({
     name: {
         type: String,
         required: [true, "name is required"]
+    },
+    department_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Department'
     }
 }
 );

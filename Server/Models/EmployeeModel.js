@@ -19,17 +19,17 @@ const employeeSchema = new Schema(
         phone: {
             type: String,
         },
-        DOB: {
+        dob: {
             type: Date
         },
         address: String,
         department_id: {
             type: Schema.Types.ObjectId,
-            ref: 'DepartmentModel'
+            ref: 'Department'
         },
         position_id: {
             type: Schema.Types.ObjectId,
-            ref: 'PositionModel'
+            ref: 'Position'
         },
         start_date: {
             type: Date
@@ -38,7 +38,7 @@ const employeeSchema = new Schema(
     }
 );
 
-employeeSchema.plugin(AutoIncrement, { inc_field: '_id' });
+employeeSchema.plugin(AutoIncrement, { inc_field: 'id' });
 
 const EmployeeModel = mongoose.model('Employee', employeeSchema);
 

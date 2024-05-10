@@ -27,6 +27,9 @@ const Employee = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
 
+    //state for selecting position base on department
+    const [selectedDepartment, setSelectedDepartment] = useState('');
+
     const itemsPerPage = 6; //itemsPerPage for paginate
 
     const formatDateTo_ddmmyyyy = (dateString) => {
@@ -35,18 +38,18 @@ const Employee = () => {
 
     const fetchEmployee = async (itemsPerPage, itemOffset) => {
         try {
-            const results = await adminService.fetchEmployeeService(itemsPerPage, itemOffset);
+            const responseServer = await adminService.fetchEmployeeService(itemsPerPage, itemOffset);
 
-            const dataEmployee = results.data.data.data;
+            const dataResponse = responseServer.data.data;
 
-            const newListUser = dataEmployee.map(row => ({
+            const newListUser = dataResponse.data.map(row => ({
                 ...row,
                 dob: formatDateTo_ddmmyyyy(row.dob),
                 start_date: formatDateTo_ddmmyyyy(row.start_date)
             }));
 
+            setTotalPage(dataResponse.totalPage);
             setEmployee(newListUser);
-            setTotalPage(results.data.data.totalPage);
         } catch (error) {
             toast.error('Fetch employee error: ' + error.response.data.message);
         }
@@ -198,6 +201,13 @@ const Employee = () => {
         }
     }
 
+    const handleDepartmentChange = (event) => {
+        const selectedDepartment = event.target.value;
+
+        setSearchInfor({ ...searchInfor, department_id: selectedDepartment });
+        setSelectedDepartment(selectedDepartment);
+    }
+
     useEffect(() => {
         fetchDepartment();
         fetchPosition();
@@ -238,8 +248,8 @@ const Employee = () => {
                                 ></input>
                             </div>
                             <select className='form-select'
-                                onChange={(event) =>
-                                    setSearchInfor({ ...searchInfor, department_id: event.target.value })}>
+                                value={selectedDepartment}
+                                onChange={handleDepartmentChange}>
                                 <option value="">Select department</option>
                                 {department.map((item, index) => {
                                     return (
@@ -251,10 +261,12 @@ const Employee = () => {
                                 onChange={(event) =>
                                     setSearchInfor({ ...searchInfor, position_id: event.target.value })}>
                                 <option value="">Select position</option>
-                                {position.map((item, index) => {
-                                    return (
-                                        <option key={`position-${index}`} value={item._id}>{item.name}</option>
-                                    )
+                                {selectedDepartment && position.map((item, index) => {
+                                    if (item.department_id === selectedDepartment) {
+                                        return (
+                                            <option key={`position-${index}`} value={item._id}>{item.name}</option>
+                                        )
+                                    }
                                 })}
                             </select>
                             <button type="submit" className="btn btn-secondary border px-4">
