@@ -95,26 +95,28 @@ const Employee = () => {
 
     const exportToCSV = async () => {
         try {
-            const dataResponse = await adminService.fetchEmployeeService(0, 0);
+            const responseServer = await adminService.fetchEmployeeService(0, 0);
 
-            if (!dataResponse || dataResponse.status !== 200) {
-                toast.error("Failed to fetch employee data");
-                return;
-            }
+            const responseData = responseServer.data.data;
 
-            const data = dataResponse.data.data;
-            if (!data || data.length === 0) {
+            if (!responseData || responseData.length === 0) {
                 toast.error("No employee data to export");
                 return;
             }
 
-            const results = data.map((item) => {
-                let { _id, image, ...processingData } = item;
-                return processingData;
+            const dataExport = responseData.map(item => {
+                const { _id, dob, department_id, position_id, start_date, ...restData } = item;
+                return {
+                    ...restData,
+                    dob: dob.slice(0, 10),
+                    department: department_id.name,
+                    position: position_id.name,
+                    start_date: start_date.slice(0, 10)
+                }
             })
 
-            setDataExport(results);
-            setTimeout(() => { csvLinkRef.current.link.click(); }, 500)
+            setDataExport(dataExport);
+            setTimeout(() => { csvLinkRef.current.link.click() }, 500)
 
         } catch (error) {
             console.error("Error exporting to CSV:", error);
@@ -155,7 +157,7 @@ const Employee = () => {
 
         const { name, position_id, department_id } = searchInfor;
 
-        // reset to page 1 when empty input for search
+        // reset to page 1 when click search button with empty input
         if (!name && !position_id && !department_id) {
             fetchEmployee(itemsPerPage, 0);
             handlePageChange(0);
