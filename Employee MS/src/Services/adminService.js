@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const addCategoryService = (category) => {
-    return axios.post('/auth/addCategory', { category });
+const addDepartmentService = (department) => {
+    return axios.post('/auth/addDepartment', { department });
 }
 
 const fetchDepartmentService = () => {
@@ -56,19 +56,33 @@ const searchEmployeeService = (name, position_id, department_id, itemsPerPage) =
     return axios.get(`/auth/search?name=${name}&position_id=${position_id}&department_id=${department_id}&itemsPerPage=${itemsPerPage}`);
 }
 
+const fetchDepartmentAndCountEmployeeService = () => {
+    return axios.get('/auth/fetchDepartmentAndCountEmployee');
+}
+
+const deleteDepartmentService = (_id) => {
+    return axios.delete(`/auth/deleteDepartment/${_id}`);
+}
+
 export default {
-    addCategoryService,
+    addDepartmentService,
     fetchDepartmentService,
+    deleteDepartmentService,
+    fetchDepartmentAndCountEmployeeService,
+
     fetchPositionService,
+
     addEmployeeService,
     fetchEmployeeByIdService,
     editEmployeeService,
     fetchEmployeeService,
     deleteEmployeeService,
+
     countAdminService,
     countEmployeeService,
     countTotalSalaryService,
     getListAdminService,
+    
     uploadFileService,
-    searchEmployeeService
+    searchEmployeeService,
 }

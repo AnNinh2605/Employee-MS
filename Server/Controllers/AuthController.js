@@ -6,21 +6,31 @@ import EmployeeModel from '../Models/EmployeeModel.js';
 import PositionModel from '../Models/PositionModel.js';
 import errorHandler from '../utils/errorHandler.js';
 
-const addCategory = async (req, res) => {
-    if (!req.body) {
+const addDepartment = async (req, res) => {
+    const { department } = req.body;
+
+    if (!department || department.trim().length === 0) {
         return res.status(400).json({
             status: "error",
-            message: "Request body is missing",
+            message: "Missing department",
         })
     }
+
     try {
-        let { category } = req.body;
-        await CategoryModel.create({
-            name: category
-        });
+        const isExistingDepartment = await DepartmentModel.findOne({ name: department });
+
+        if (isExistingDepartment) {
+            return res.status(409).json({
+                status: "error",
+                message: "Department already exists"
+            })
+        }
+
+        await DepartmentModel.create({ name: department });
+
         return res.status(201).json({
             status: "success",
-            message: "Created category successfully",
+            message: "Department created successfully",
         });
     } catch (error) {
         return errorHandler(res, error);
@@ -109,7 +119,7 @@ const fetchEmployee = async (req, res) => {
     const { itemsPerPage, itemOffset } = req.query;
 
     try {
-        const query = EmployeeModel.find({}, "-id -__v").populate('department_id', '-_id').populate('position_id', '-_id').lean();
+        const query = EmployeeModel.find({}, "-id -__v").populate('department_id', '-_id').populate('position_id', '-_id -department_id').lean();
 
         if (!+itemsPerPage && !+itemOffset) {
             const results = await query.exec();
@@ -195,7 +205,7 @@ const deleteEmployee = async (req, res) => {
         const results = await EmployeeModel.findByIdAndDelete(_id);
 
         if (!results) {
-            return res.status(500).json({
+            return res.status(404).json({
                 status: "error",
                 message: "Failed to delete employee",
             });
@@ -310,22 +320,22 @@ const uploadFile = async (req, res) => {
 }
 
 const searchEmployee = async (req, res) => {
-    const { name, position_id, department_id, itemsPerPage} = req.query;
+    const { name, position_id, department_id, itemsPerPage } = req.query;
     const queryCondition = {};
 
     if (name) {
         // regex to find correct names and approximate names
         queryCondition.name = { $regex: `${name}`, $options: 'i' };
     }
-    
+
     if (position_id) {
         queryCondition.position_id = position_id;
     }
-    
+
     if (department_id) {
         queryCondition.department_id = department_id;
     }
-    
+
     try {
         // count total page
         const dataCount = await EmployeeModel.countDocuments(queryCondition);
@@ -333,10 +343,10 @@ const searchEmployee = async (req, res) => {
 
         // paginate data
         const results = await EmployeeModel.find(queryCondition)
-        .populate('department_id', '-_id')
-        .populate('position_id', '-_id')
-        .limit(+itemsPerPage)
-        .lean();
+            .populate('department_id', '-_id')
+            .populate('position_id', '-_id')
+            .limit(+itemsPerPage)
+            .lean();
 
         return res.status(200).json({
             status: "success",
@@ -351,9 +361,63 @@ const searchEmployee = async (req, res) => {
     }
 }
 
+const fetchDepartmentAndCountEmployee = async (req, res) => {
+    try {
+        const responseDB = await DepartmentModel.aggregate([
+            {
+                $lookup: {
+                    from: "employees",
+                    localField: "_id",
+                    foreignField: "department_id",
+                    as: "employee"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    employeeCount: { $size: "$employee" },
+                }
+            }
+        ]).exec();
+        
+        return res.status(200).json({
+            status: "success",
+            message: "Get salary total successfully",
+            data: responseDB
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
+const deleteDepartment = async (req, res) => {
+    const _id = req.params._id;
+
+    try {
+        const results = await DepartmentModel.findByIdAndDelete(_id);
+
+        if (!results) {
+            return res.status(404).json({
+                status: "error",
+                message: "Department not found",
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Deleted department successfully",
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
 const AuthController = {
-    addCategory,
+    addDepartment,
     fetchDepartment,
+    deleteDepartment,
+
     fetchPosition,
     addEmployee,
     fetchEmployee,
@@ -365,7 +429,8 @@ const AuthController = {
     getSalaryTotal,
     getListAdmin,
     uploadFile,
-    searchEmployee
+    searchEmployee,
+    fetchDepartmentAndCountEmployee
 }
 
 export default AuthController;

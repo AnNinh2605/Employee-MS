@@ -22,7 +22,9 @@ router.get('/search', AuthController.searchEmployee)
 
 // department route
 router.get('/department', AuthController.fetchDepartment)
-router.post('/addCategory', AuthController.addCategory)
+router.get('/fetchDepartmentAndCountEmployee', AuthController.fetchDepartmentAndCountEmployee)
+router.post('/addDepartment', AuthController.addDepartment)
+router.delete('/deleteDepartment/:_id', AuthController.deleteDepartment)
 
 // position route
 router.get('/position', AuthController.fetchPosition)
