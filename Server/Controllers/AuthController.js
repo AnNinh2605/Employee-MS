@@ -58,27 +58,6 @@ const fetchDepartment = async (req, res) => {
     }
 }
 
-const fetchPosition = async (req, res) => {
-    try {
-        const results = await PositionModel.find();
-
-        if (!results || results.length === 0) {
-            return res.status(404).json({
-                status: "error",
-                message: "No positions found"
-            });
-        }
-
-        return res.status(200).json({
-            status: "success",
-            message: "Get position successfully",
-            data: results
-        })
-    } catch (error) {
-        return errorHandler(res, error);
-    }
-}
-
 const addEmployee = async (req, res) => {
     let { name, email, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
 
@@ -380,10 +359,10 @@ const fetchDepartmentAndCountEmployee = async (req, res) => {
                 }
             }
         ]).exec();
-        
+
         return res.status(200).json({
             status: "success",
-            message: "Get salary total successfully",
+            message: "Get department and count employee successfully",
             data: responseDB
         })
     } catch (error) {
@@ -413,12 +392,132 @@ const deleteDepartment = async (req, res) => {
     }
 }
 
+const fetchPosition = async (req, res) => {
+    try {
+        const results = await PositionModel.find();
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "No positions found"
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Get position successfully",
+            data: results
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
+const fetchPositionAndCountEmployee = async (req, res) => {
+    try {
+        const responseDB = await PositionModel.aggregate([
+            {
+                $lookup: {
+                    from: "employees",
+                    localField: "_id",
+                    foreignField: "position_id",
+                    as: "employee"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    employeeCount: { $size: "$employee" },
+                }
+            }
+        ]).exec();
+
+        return res.status(200).json({
+            status: "success",
+            message: "Get position and count employee successfully",
+            data: responseDB
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
+const deletePosition = async (req, res) => {
+    const _id = req.params._id;
+
+    try {
+        const results = await PositionModel.findByIdAndDelete(_id);
+
+        if (!results) {
+            return res.status(404).json({
+                status: "error",
+                message: "Position not found",
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Deleted position successfully",
+        })
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
+const addPosition = async (req, res) => {
+    const { position, department_id } = req.body;
+
+    if (!position || position.trim().length === 0 || !department_id) {
+        return res.status(400).json({
+            status: "error",
+            message: "Missing position or department information"
+        })
+    }
+
+    try {
+        const isExistingPosition = await PositionModel.findOne({ name: position });
+
+        if (isExistingPosition) {
+            return res.status(409).json({
+                status: "error",
+                message: "Position already exists"
+            })
+        }
+
+        const isExistingDepartment = await DepartmentModel.findById(department_id);
+
+        if (!isExistingDepartment) {
+            return res.status(404).json({
+                status: "error",
+                message: "Department does not exist"
+            })
+        }
+
+        await PositionModel.create({
+            name: position,
+            department_id: department_id
+        });
+
+        return res.status(201).json({
+            status: "success",
+            message: "Position created successfully",
+        });
+    } catch (error) {
+        return errorHandler(res, error);
+    }
+}
+
 const AuthController = {
     addDepartment,
     fetchDepartment,
     deleteDepartment,
 
     fetchPosition,
+    fetchPositionAndCountEmployee,
+    deletePosition,
+    addPosition,
+
     addEmployee,
     fetchEmployee,
     fetchEmployeeById,

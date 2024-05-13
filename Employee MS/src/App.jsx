@@ -12,7 +12,9 @@ import Home from './Components/Dashboard/Home.jsx';
 import Employee from './Components/Dashboard/Employee.jsx'
 import EmployeeDetail from './Components/Dashboard/EmployeeDetail.jsx'
 import Department from './Components/Dashboard/Department.jsx'
-import Profile from './Components/Dashboard/Profile.jsx'
+import Position from './Components/Dashboard/Position.jsx'
+import AddPosition from './Components/Dashboard/AddPosition.jsx';
+
 import AddDepartment from './Components/Dashboard/AddDepartment.jsx';
 import AddEmployee from './Components/Dashboard/AddEmployee.jsx';
 import EditEployee from './Components/Dashboard/EditEployee.jsx';
@@ -33,7 +35,9 @@ function App() {
                         <Route path='' element={<Home />} />
                         <Route path='/dashboard/employee' element={<Employee />} ></Route>
                         <Route path='/dashboard/department' element={<Department />} ></Route>
-                        <Route path='/dashboard/profile' element={<Profile />} ></Route>
+                        <Route path='/dashboard/position' element={<Position />} ></Route>
+                        <Route path='/dashboard/add_position' element={<AddPosition />} ></Route>
+                        
                         <Route path='/dashboard/add_department' element={<AddDepartment />} ></Route>
                         <Route path='/dashboard/add_employee' element={<AddEmployee />} ></Route>
                         <Route path='/dashboard/edit_employee/:_id' element={<EditEployee />} ></Route>

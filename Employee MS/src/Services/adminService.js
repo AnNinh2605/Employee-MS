@@ -8,8 +8,18 @@ const fetchDepartmentService = () => {
     return axios.get('/auth/department');
 }
 
+// position
 const fetchPositionService = () => {
     return axios.get('/auth/position');
+}
+const fetchPositionAndCountEmployeeService = () => {
+    return axios.get('/auth/fetchPositionAndCountEmployee');
+}
+const deletePositionService = (_id) => {
+    return axios.delete(`/auth/deletePosition/${_id}`);
+}
+const addPositionService = (formData) => {
+    return axios.post('/auth/addPosition', formData);
 }
 
 const addEmployeeService = (employeeData) => {
@@ -71,6 +81,9 @@ export default {
     fetchDepartmentAndCountEmployeeService,
 
     fetchPositionService,
+    fetchPositionAndCountEmployeeService,
+    deletePositionService,
+    addPositionService,
 
     addEmployeeService,
     fetchEmployeeByIdService,

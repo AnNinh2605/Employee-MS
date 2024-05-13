@@ -28,6 +28,9 @@ router.delete('/deleteDepartment/:_id', AuthController.deleteDepartment)
 
 // position route
 router.get('/position', AuthController.fetchPosition)
+router.post('/addPosition', AuthController.addPosition)
+router.get('/fetchPositionAndCountEmployee', AuthController.fetchPositionAndCountEmployee)
+router.delete('/deletePosition/:_id', AuthController.deletePosition)
 
 //upload file 
 router.post('/upload', uploadFile.single('file'), AuthController.uploadFile)
