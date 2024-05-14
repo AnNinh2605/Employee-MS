@@ -1,50 +1,52 @@
 import { React, useEffect } from 'react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import adminService from '../../Services/adminService.js';
 
 const Home = () => {
-    const [adminCount, setAdminCount] = useState(0)
-    const [employeeCount, setEmployeeCount] = useState(0)
-    const [salaryTotal, setSalaryTotal] = useState(0)
-    const [listAdmins, setListAdmins] = useState([])
+    const [adminCount, setAdminCount] = useState(0);
+    const [employeeCount, setEmployeeCount] = useState(0);
+    const [salaryTotal, setSalaryTotal] = useState(0);
+    const [listAdmins, setListAdmins] = useState([]);
 
     const getAdminCount = async () => {
-        let results = await adminService.countAdminService();
-        if (results && results.status === 200) {
-            setAdminCount(results.data.data)
-        }
-        else {
-            //error
+        try {
+            const responseServer = await adminService.countAdminService();
+
+            setAdminCount(responseServer.data.data);
+        } catch (error) {
+            toast.error('Count admin error: ' + error.response.data);
         }
     }
+
     const getEmployeeCount = async () => {
-        let results = await adminService.countEmployeeService();
-        if (results && results.status === 200) {
-            setEmployeeCount(results.data.data)
-        }
-        else {
-            //error
+        try {
+            const responseServer = await adminService.countEmployeeService();
+
+            setEmployeeCount(responseServer.data.data);
+        } catch (error) {
+            toast.error('Count employee error: ' + error.response.data);
         }
     }
 
     const getSalaryTotal = async () => {
-        let results = await adminService.countTotalSalaryService();
-        if (results && results.status === 200) {
-            setSalaryTotal(results.data.data)
-        }
-        else {
-            //error
+        try {
+            const responseServer = await adminService.countTotalSalaryService();
+
+            setSalaryTotal(responseServer.data.data);
+        } catch (error) {
+            toast.error('Get salary error: ' + error.response.data);
         }
     }
 
     const getListAdmin = async () => {
-        let results = await adminService.getListAdminService();
-        if (results && results.status === 200) {
-            setListAdmins(results.data.data)
-        }
-        else {
-            //error
+        try {
+            const responseServer = await adminService.getListAdminService();
+            
+            setListAdmins(responseServer.data.data)
+        } catch (error) {
+            toast.error('Get list admin error: ' + error.response.data);
         }
     }
 
@@ -102,7 +104,7 @@ const Home = () => {
                         {
                             listAdmins.map((item, index) => (
                                 <tr key={`listAdmin-${index}`}>
-                                    <td>{item.email}</td>
+                                    <td>{item.username}</td>
                                     <td>
                                         <button
                                             className="btn btn-warning btn-sm me-2">

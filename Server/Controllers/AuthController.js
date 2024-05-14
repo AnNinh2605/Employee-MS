@@ -1,6 +1,7 @@
 import fs from 'fs';
 import csv from 'csv-parser';
 
+import AdminModel from '../Models/AdminModel.js'
 import DepartmentModel from '../Models/DepartmentModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import PositionModel from '../Models/PositionModel.js';
@@ -201,7 +202,8 @@ const deleteEmployee = async (req, res) => {
 
 const getAdminCount = async (req, res) => {
     try {
-        let results = await EmployeeModel.countDocuments({ role: "admin" });
+        const results = await AdminModel.countDocuments();
+
         return res.status(200).json({
             status: "success",
             message: "Get adminCount successful",
@@ -214,7 +216,8 @@ const getAdminCount = async (req, res) => {
 
 const getEmployeeCount = async (req, res) => {
     try {
-        let results = await EmployeeModel.countDocuments({ role: "employee" });
+        const results = await EmployeeModel.countDocuments();
+
         return res.status(200).json({
             status: "success",
             message: "Get EmployeeCount successful",
@@ -227,7 +230,7 @@ const getEmployeeCount = async (req, res) => {
 
 const getSalaryTotal = async (req, res) => {
     try {
-        let results = await EmployeeModel.aggregate([
+        const results = await EmployeeModel.aggregate([
             {
                 $group: {
                     _id: null,
@@ -235,6 +238,7 @@ const getSalaryTotal = async (req, res) => {
                 }
             }
         ]);
+
         return res.status(200).json({
             status: "success",
             message: "Get salary total successfully",
@@ -247,7 +251,8 @@ const getSalaryTotal = async (req, res) => {
 
 const getListAdmin = async (req, res) => {
     try {
-        let results = await EmployeeModel.find({ role: "admin" }, 'email');
+        const results = await AdminModel.find();
+
         return res.status(200).json({
             status: "success",
             message: "Get AdminList successfully",

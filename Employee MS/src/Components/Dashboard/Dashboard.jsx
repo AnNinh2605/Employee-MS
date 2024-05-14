@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import commonService from '../../Services/commonService';
 
@@ -7,15 +8,16 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        let results = await commonService.logoutService();
-        if (results && results.status === 204) {
+        try {
+            await commonService.logoutService();
+
             localStorage.removeItem("access_token");
             navigate('/');
-        }
-        else {
-           //error
+        } catch (error) {
+            toast.error('Logout error: ' + error.response.data);
         }
     }
+
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
