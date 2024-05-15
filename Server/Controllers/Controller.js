@@ -1,13 +1,29 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import Joi from 'joi';
 
 import AdminModel from '../Models/AdminModel.js'
 import errorHandler from '../utils/errorHandler.js';
 
 const login = async (req, res) => {
     const { username, password } = req.body;
+    
+    // Define schema
+    const schema = Joi.object({
+        username: Joi.string()
+            .alphanum()
+            .min(3)
+            .max(30)
+            .required(),
 
-    if (!username || !password) {
+        password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+    })
+
+    // Validate data
+    const result = schema.validate(req.body);
+
+    if (result.error) {
         return res.status(400).json({
             status: "error",
             message: "Missing information",
@@ -15,15 +31,16 @@ const login = async (req, res) => {
     }
 
     try {
-        const admin = await AdminModel.findOne({ username })
-        if (!admin) {
+        const findAdmin = await AdminModel.findOne({ username })
+
+        if (!findAdmin) {
             return res.status(401).json({
                 status: "error",
                 message: "Username is not existing",
             });
         }
 
-        const isTruePassword = bcrypt.compareSync(password, admin.password);
+        const isTruePassword = bcrypt.compareSync(password, findAdmin.password);
         if (!isTruePassword) {
             return res.status(401).json({
                 status: "error",
@@ -31,10 +48,10 @@ const login = async (req, res) => {
             });
         }
 
-        let payload = {
-            _id: admin._id,
-            email: admin.username,
-            role: admin.role
+        const payload = {
+            _id: findAdmin._id,
+            username: findAdmin.username,
+            role: findAdmin.role
         }
         const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
         res.cookie('jwt_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })

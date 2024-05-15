@@ -1,8 +1,9 @@
-import { React, useState } from 'react';
+import { React } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
 
 import './Login.scss'
 
@@ -12,71 +13,67 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [inputLogin, setInputLogin] = useState({
-        username: '',
-        password: ''
-    })
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const [error, setError] = useState(null)
+    const validateNoSpaces = (value) => {
+        return value.trim().length === 0 ? "Please enter a valid username or password." : undefined;
+    };
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
-
-        if (!inputLogin.username || !inputLogin.password) {
-            toast.error('Missing username/ password');
-            return;
-        }
-
+    const handleLogin = async (data) => {
         try {
-            let results = await commonService.loginService(inputLogin);
+            const responseServer = await commonService.loginService(data);
 
-            if (results && results.status === 200) {
-                let token = results.data.data.access_token;
-                let decodedToken = jwtDecode(token);
+            const token = responseServer.data.data.access_token;
+            const decodedToken = jwtDecode(token);
 
-                if (decodedToken.role === "admin") {
-                    navigate('/dashboard');
-                } else {
-                    navigate(`/employeeDetail/${decodedToken._id}`);
-                }
-
-                dispatch({
-                    type: 'LOGIN_SUCCESS',
-                    payload: decodedToken
-                })
-
-                localStorage.setItem("access_token", token);
+            if (decodedToken.role === "admin") {
+                navigate('/dashboard');
+            } else {
+                navigate(`/employeeDetail/${decodedToken._id}`);
             }
+
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: decodedToken
+            })
+
+            localStorage.setItem("access_token", token);
         } catch (error) {
-            let errorMS = error.response ? error.response.data.message : 'An error occurred';
-            setError(errorMS);
+            const errorMS = error.response ? error.response.data.message : 'An error occurred';
+            toast.error(errorMS);
         }
     }
+
     return (
         <div className='d-flex justify-content-center align-items-center vh-100 loginPage'>
             <div className='p-3 w-25 border rounded loginForm'>
-                <div className='text-warning'>{error && error}</div>
                 <h2>Login Page</h2>
-                <form onSubmit={(event) => handleLogin(event)}>
+                <form onSubmit={handleSubmit(handleLogin)}>
                     <div className="form-group mb-2">
                         <label htmlFor="username"><strong>Username: </strong></label>
-                        <input type="text" className="form-control" id="username"
-                            placeholder="Username" autoComplete='on' required
-                            onChange={(event) => setInputLogin({ ...inputLogin, username: event.target.value })}
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="username"
+                            placeholder="Username"
+                            autoComplete='on'
+                            {...register('username', { required: true, validate: validateNoSpaces })}
                         ></input>
+                        {errors.username && <small className='text-warning'>This field is required</small>}
                     </div>
                     <div className="form-group mb-2">
                         <label htmlFor="password">Password: </label>
-                        <input type="password" className="form-control" id="password"
-                            placeholder="Password" autoComplete='on' required
-                            onChange={(event) => setInputLogin({ ...inputLogin, password: event.target.value })}
+                        <input
+                            type="password"
+                            className="form-control"
+                            id="password"
+                            placeholder="Password"
+                            autoComplete='on'
+                            {...register('password', { required: true, validate: validateNoSpaces })}
                         ></input>
+                        {errors.password && <small className='text-warning'>This field is required</small>}
                     </div>
-                    <div className="mb-1">
-                        <input type="checkbox" className="me-2" id="checkbox"></input>
-                        <label htmlFor="checkbox">You are Agree with terms & Conditions</label>
-                    </div>
-                    <button type="submit" className="btn btn-primary w-100">Submit</button>
+                    <button type="submit" className="btn btn-primary mt-2 w-100">Submit</button>
                 </form>
             </div>
         </div>
