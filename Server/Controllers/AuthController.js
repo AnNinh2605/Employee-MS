@@ -1,11 +1,13 @@
 import fs from 'fs';
 import csv from 'csv-parser';
+import Joi from 'joi';
 
 import AdminModel from '../Models/AdminModel.js'
 import DepartmentModel from '../Models/DepartmentModel.js';
 import EmployeeModel from '../Models/EmployeeModel.js';
 import PositionModel from '../Models/PositionModel.js';
 import errorHandler from '../utils/errorHandler.js';
+import schemaValidate from '../utils/validateEmployee.js';
 
 const addDepartment = async (req, res) => {
     const { department } = req.body;
@@ -60,17 +62,21 @@ const fetchDepartment = async (req, res) => {
 }
 
 const addEmployee = async (req, res) => {
-    let { name, email, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
 
-    if (!name || !email || !phone || !salary || !address || !department_id || !dob || !position_id || !start_date) {
+    // Validate data
+    const { error } = schemaValidate.validate(req.body);
+
+    if (error) {
+        console.log("Validation error: ", error.details[0].message);
+
         return res.status(400).json({
             status: "error",
-            message: "Request body is missing",
-        })
+            message: "Invalid input data. Please check and try again.",
+        });
     }
 
     try {
-        const existingEmployee = await EmployeeModel.findOne({ email });
+        const existingEmployee = await EmployeeModel.findOne({ email: req.body.email });
         if (existingEmployee) {
             return res.status(409).json({
                 status: "error",
@@ -146,17 +152,16 @@ const fetchEmployeeById = async (req, res) => {
 const editEmployee = async (req, res) => {
     const _id = req.params._id;
 
-    if (req.body.email) {
-        delete req.body.email;
-    }
+    // Validate data
+    const { error } = schemaValidate.validate(req.body);
+    
+    if (error) {
+        console.log("Validation error: ", error.details[0].message);
 
-    const { name, phone, salary, address, department_id, position_id, dob, start_date } = req.body;
-
-    if (!name || !phone || !salary || !address || !department_id || !dob || !position_id || !start_date) {
         return res.status(400).json({
             status: "error",
-            message: "Request body is missing",
-        })
+            message: "Invalid input data. Please check and try again.",
+        });
     }
 
     try {

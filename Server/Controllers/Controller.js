@@ -21,12 +21,14 @@ const login = async (req, res) => {
     })
 
     // Validate data
-    const result = schema.validate(req.body);
+    const {error} = schema.validate(req.body);
+    
+    if (error) {
+        console.error('Validation error:', error.details[0].message);
 
-    if (result.error) {
         return res.status(400).json({
             status: "error",
-            message: "Missing information",
+            message: "Invalid input data. Please check and try again.",
         });
     }
 
