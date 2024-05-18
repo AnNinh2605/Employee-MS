@@ -1,23 +1,21 @@
 import { React, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
 
 import adminService from '../../Services/adminService.js';
-import { toast } from 'react-toastify';
 
 const AddDepartment = () => {
     const navigate = useNavigate();
-    const [department, setdepartment] = useState();
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const handleAddDepartment = async (event) => {
-        event.preventDefault();
+    const validateNoSpaces = (value) => {
+        return (value + "").trim().length === 0 ? "Can not be empty value." : true;
+    };
 
-        if (!department || department.trim().length === 0) {
-            toast.error("Missing department");
-            return;
-        }
-
+    const handleAddDepartment = async (data) => {
         try {
-            const responseServer = await adminService.addDepartmentService(department);
+            const responseServer = await adminService.addDepartmentService(data);
 
             toast.success(responseServer.data.message);
             navigate('/dashboard/department');
@@ -30,20 +28,23 @@ const AddDepartment = () => {
         <div className='d-flex justify-content-center align-items-center'>
             <div className='p-3 w-25 border rounded mt-5'>
                 <h2>Add Department</h2>
-                <form onSubmit={handleAddDepartment}>
+                <form onSubmit={handleSubmit(handleAddDepartment)}>
                     <div className="form-group mb-2">
-                        <label htmlFor="category"><strong>Department: </strong></label>
+                        <label htmlFor="department"><strong>Department: </strong></label>
                         <input
                             type="text"
                             className="form-control my-2"
-                            id="category"
+                            id="department"
                             placeholder="Department"
                             autoComplete='on'
                             name="department"
-                            value={department}
-                            required
-                            onChange={event => setdepartment(event.target.value)}
+                            {...register('department',
+                                {
+                                    required: "Department is required",
+                                    validate: validateNoSpaces
+                                })}
                         />
+                         {errors.department && <small className='text-danger'>{errors.department.message}</small>}
                     </div>
                     <button type="submit" className="btn btn-success w-100">Submit</button>
                 </form>

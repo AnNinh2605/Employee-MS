@@ -11,17 +11,29 @@ import schemaValidate from '../utils/validateEmployee.js';
 
 const addDepartment = async (req, res) => {
     const { department } = req.body;
+    
+    // Define schema
+    const schemaValidate = Joi.object({
+        department: Joi.string()
+            .trim()
+            .min(1)
+            .required()
+    })
 
-    if (!department || department.trim().length === 0) {
+    const { error } = schemaValidate.validate(req.body);
+
+    if (error) {
+        console.log("Validation error: ", error.details[0].message);
+
         return res.status(400).json({
             status: "error",
-            message: "Missing department",
-        })
+            message: "Invalid input data. Please check and try again.",
+        });
     }
 
     try {
         const isExistingDepartment = await DepartmentModel.findOne({ name: department });
-
+        
         if (isExistingDepartment) {
             return res.status(409).json({
                 status: "error",
@@ -154,7 +166,7 @@ const editEmployee = async (req, res) => {
 
     // Validate data
     const { error } = schemaValidate.validate(req.body);
-    
+
     if (error) {
         console.log("Validation error: ", error.details[0].message);
 
