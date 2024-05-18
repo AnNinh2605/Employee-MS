@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const addDepartmentService = (department) => {
-    return axios.post('/auth/addDepartment', { department });
+    return axios.post('/auth/addDepartment', department );
 }
 
 const fetchDepartmentService = () => {
@@ -12,8 +12,8 @@ const fetchDepartmentService = () => {
 const fetchPositionService = () => {
     return axios.get('/auth/position');
 }
-const fetchPositionAndCountEmployeeService = () => {
-    return axios.get('/auth/fetchPositionAndCountEmployee');
+const fetchPositionAndCountEmployeeService = (itemsPerPage, itemOffset) => {
+    return axios.get(`/auth/fetchPositionAndCountEmployee?itemsPerPage=${itemsPerPage}&itemOffset=${itemOffset}`);
 }
 const deletePositionService = (_id) => {
     return axios.delete(`/auth/deletePosition/${_id}`);
