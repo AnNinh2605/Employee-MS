@@ -1,41 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import adminService from '../../Services/adminService.js';
-import { toast } from 'react-toastify';
 
 const AddPosition = () => {
     const navigate = useNavigate();
 
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [department, setDepartment] = useState([]);
-    const [formData, setFormData] = useState({
-        position: '',
-        department_id: ''
-    })
-
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
-    }
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (!formData.position || formData.position.trim().length === 0 || !formData.department_id) {
-            toast.error("Missing position or department information");
-            return;
-        }
-
-        try {
-            const responseServer = await adminService.addPositionService(formData);
-
-            toast.success(responseServer.data.message);
-            navigate('/dashboard/position');
-        } catch (error) {
-            toast.error("Add position error: " + error.response.data.message);
-        }
-    }
-
+ 
     const fetchDepartment = async () => {
         try {
             const responseServer = await adminService.fetchDepartmentService();
@@ -47,6 +22,21 @@ const AddPosition = () => {
         }
     }
 
+    const validateNoSpaces = (value) => {
+        return (value + "").trim().length === 0 ? "Can not be empty value." : true;
+    };
+
+    const handleAddPosition = async (data) => {
+        try {
+            const responseServer = await adminService.addPositionService(data);
+
+            toast.success(responseServer.data.message);
+            navigate('/dashboard/position');
+        } catch (error) {
+            toast.error("Add position error: " + error.response.data.message);
+        }
+    }
+
     useEffect(() => {
         fetchDepartment();
     }, [])
@@ -55,7 +45,7 @@ const AddPosition = () => {
         <div className='d-flex justify-content-center align-items-center'>
             <div className='p-3 w-25 border rounded mt-5'>
                 <h2>Add Position</h2>
-                <form onSubmit={handleSubmit} className='form-group d-flex flex-column gap-2'>
+                <form onSubmit={handleSubmit(handleAddPosition)} className='form-group d-flex flex-column gap-2'>
                     <div className="form-group">
                         <label htmlFor="position"><strong>Position: </strong></label>
                         <input
@@ -65,24 +55,33 @@ const AddPosition = () => {
                             name="position"
                             placeholder="Position"
                             autoComplete='on'
-                            value={formData.position}
-                            required
-                            onChange={handleInputChange}
+                            {...register('position',
+                                {
+                                    required: "Position is required",
+                                    validate: validateNoSpaces
+                                })}
                         />
+                        {errors.position && <small className='text-danger'>{errors.position.message}</small>}
                     </div>
-                    <select
-                        className='form-select'
-                        name="department_id"
-                        value={formData.department_id}
-                        onChange={handleInputChange}
-                    >
-                        <option value="">Select department</option>
-                        {department.map((item, index) => {
-                            return (
-                                <option key={`department-${index}`} value={item._id}>{item.name}</option>
-                            )
-                        })}
-                    </select>
+                    <div >
+                        <select
+                            className='form-select'
+                            name="department_id"
+                            {...register('department_id',
+                                {
+                                    required: "Department is required",
+                                    validate: validateNoSpaces
+                                })}
+                        >
+                            <option value="">Select department</option>
+                            {department.map((item, index) => {
+                                return (
+                                    <option key={`department_id-${index}`} value={item._id}>{item.name}</option>
+                                )
+                            })}
+                        </select>
+                        {errors.department_id && <small className='text-danger'>{errors.department_id.message}</small>}
+                    </div>
                     <button type="submit" className="btn btn-success w-100">Submit</button>
                 </form>
             </div>
