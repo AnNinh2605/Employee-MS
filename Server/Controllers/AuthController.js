@@ -132,6 +132,7 @@ const fetchEmployee = async (req, res) => {
         const totalPage = Math.ceil(totalCount / itemsPerPage);
 
         const results = await query.skip(+itemOffset).limit(+itemsPerPage).exec();
+
         return res.status(200).json({
             status: "success",
             message: "Get employee successfully",
@@ -363,8 +364,10 @@ const searchEmployee = async (req, res) => {
 }
 
 const fetchDepartmentAndCountEmployee = async (req, res) => {
+    const { itemsPerPage, itemOffset } = req.query;
+
     try {
-        const responseDB = await DepartmentModel.aggregate([
+        const query = DepartmentModel.aggregate([
             {
                 $lookup: {
                     from: "employees",
@@ -380,12 +383,19 @@ const fetchDepartmentAndCountEmployee = async (req, res) => {
                     employeeCount: { $size: "$employee" },
                 }
             }
-        ]).exec();
+        ]);
+        const responseDB = await query.skip(+itemOffset).limit(+itemsPerPage).exec();
+
+        const totalCount = await DepartmentModel.countDocuments({});
+        const totalPage = Math.ceil(totalCount / itemsPerPage);
 
         return res.status(200).json({
             status: "success",
             message: "Get department and count employee successfully",
-            data: responseDB
+            data: {
+                data: responseDB,
+                totalPage
+            }
         })
     } catch (error) {
         return errorHandler(res, error);
@@ -436,29 +446,51 @@ const fetchPosition = async (req, res) => {
 }
 
 const fetchPositionAndCountEmployee = async (req, res) => {
+    const { itemsPerPage, itemOffset } = req.query;
+
     try {
-        const responseDB = await PositionModel.aggregate([
+        const query = PositionModel.aggregate([
             {
                 $lookup: {
                     from: "employees",
                     localField: "_id",
                     foreignField: "position_id",
-                    as: "employee"
+                    as: "employees"
                 }
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "department_id",
+                    foreignField: "_id",
+                    as: "department"
+                }
+            },
+            {
+                $unwind: "$department"
             },
             {
                 $project: {
                     _id: 1,
                     name: 1,
-                    employeeCount: { $size: "$employee" },
+                    department: "$department.name",
+                    employeeCount: { $size: "$employees" },
                 }
             }
-        ]).exec();
+        ]);
+
+        const responseDB = await query.skip(+itemOffset).limit(+itemsPerPage).exec();
+
+        const totalCount = await PositionModel.countDocuments({});
+        const totalPage = Math.ceil(totalCount / itemsPerPage);
 
         return res.status(200).json({
             status: "success",
             message: "Get position and count employee successfully",
-            data: responseDB
+            data: {
+                data: responseDB,
+                totalPage
+            }
         })
     } catch (error) {
         return errorHandler(res, error);
