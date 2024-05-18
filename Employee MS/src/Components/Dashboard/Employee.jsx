@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CSVLink } from "react-csv";
 import ReactPaginate from 'react-paginate';
+import { useForm } from 'react-hook-form';
 import _ from 'lodash'
 
 import './style.scss'
@@ -12,23 +13,16 @@ import adminService from '../../Services/adminService.js';
 const Employee = () => {
     const csvLinkRef = useRef();
 
+    const { register, handleSubmit } = useForm();
+
     const [employee, setEmployee] = useState([]);
     const [department, setDepartment] = useState([]);
     const [position, setPosition] = useState([]);
-
-    const [searchInfor, setSearchInfor] = useState({
-        name: '',
-        position_id: '',
-        department_id: ''
-    })
 
     const [dataExport, setDataExport] = useState([]); //state to save data to export
     const [itemOffset, setItemOffset] = useState(0); //itemOffset for paginate
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
-
-    //state for selecting position base on department
-    const [selectedDepartment, setSelectedDepartment] = useState('');
 
     const itemsPerPage = 6; //itemsPerPage for paginate
 
@@ -155,10 +149,8 @@ const Employee = () => {
         setEmployee(newListUser);
     }
 
-    const handleSearch = async (event) => {
-        event.preventDefault();
-
-        const { name, position_id, department_id } = searchInfor;
+    const handleSearch = async (data) => {
+        const { name, position_id, department_id } = data;
 
         // reset to page 1 when click search button with empty input
         if (!name && !position_id && !department_id) {
@@ -201,13 +193,6 @@ const Employee = () => {
         }
     }
 
-    const handleDepartmentChange = (event) => {
-        const selectedDepartment = event.target.value;
-
-        setSearchInfor({ ...searchInfor, department_id: selectedDepartment });
-        setSelectedDepartment(selectedDepartment);
-    }
-
     useEffect(() => {
         fetchDepartment();
         fetchPosition();
@@ -219,7 +204,7 @@ const Employee = () => {
             <div className='px-5'>
                 <div className='mt-3'>
                     <div className='text-center'>
-                        <h4>Employee List</h4>
+                        <h3>Employee List</h3>
                     </div>
                     <div className='d-flex justify-content-between'>
                         <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
@@ -239,17 +224,22 @@ const Employee = () => {
                         </div>
                     </div>
                     <div className='mt-2'>
-                        <form onSubmit={handleSearch} className='d-flex justify-content-between gap-2'>
+                        <form onSubmit={handleSubmit(handleSearch)} className='d-flex justify-content-between gap-2'>
                             <div className="input-group">
-                                <input type="search" className="form-control w-auto" id='name'
+                                <input
+                                    type="search"
+                                    className="form-control"
+                                    id='name'
                                     placeholder="Type your keywords..."
-                                    onChange={event =>
-                                        setSearchInfor({ ...searchInfor, name: event.target.value })}
-                                ></input>
+                                    {...register('name')}
+                                />
                             </div>
-                            <select className='form-select'
-                                value={selectedDepartment}
-                                onChange={handleDepartmentChange}>
+
+                            <select
+                                id="department_id"
+                                className='form-select'
+                                {...register('department_id')}
+                            >
                                 <option value="">Select department</option>
                                 {department.map((item, index) => {
                                     return (
@@ -257,18 +247,20 @@ const Employee = () => {
                                     )
                                 })}
                             </select>
-                            <select className='form-select'
-                                onChange={(event) =>
-                                    setSearchInfor({ ...searchInfor, position_id: event.target.value })}>
+
+                            <select
+                                className='form-select'
+                                id="position_id"
+                                {...register('position_id')}
+                            >
                                 <option value="">Select position</option>
-                                {selectedDepartment && position.map((item, index) => {
-                                    if (item.department_id === selectedDepartment) {
-                                        return (
-                                            <option key={`position-${index}`} value={item._id}>{item.name}</option>
-                                        )
-                                    }
+                                {position.map((item, index) => {
+                                    return (
+                                        <option key={`position-${index}`} value={item._id}>{item.name}</option>
+                                    )
                                 })}
                             </select>
+
                             <button type="submit" className="btn btn-secondary border px-4">
                                 <i className="fa fa-search"></i>
                             </button>
