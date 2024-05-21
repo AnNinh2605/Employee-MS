@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosConfig = () => {
-    axios.defaults.baseURL = 'https://employee-management-system-server-jade.vercel.app';
+    axios.defaults.baseURL = 'https://employee-management-system-server-rl8m.onrender.com';
     axios.defaults.withCredentials = true;
 
     // Add a request interceptor
