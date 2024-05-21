@@ -31,6 +31,6 @@ app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], aut
 
 connectDB();
 
-// app.listen(PORT, () => {
-//     console.log(`Example app listening on port ${PORT}`)
-// })
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
+})
