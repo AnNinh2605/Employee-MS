@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001
 const app = express()
 
 app.use(cors({
-    origin: "https://employee-management-system-client.vercel.app",
+    origin: process.env.CLIENT_URL,
     methods: 'GET,PUT,POST,DELETE',
     credentials: true
 }))
