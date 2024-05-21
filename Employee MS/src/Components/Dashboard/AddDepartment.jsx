@@ -1,18 +1,17 @@
-import { React, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 
 import adminService from '../../Services/adminService.js';
+import validation from '../../utils/validations.js';
 
 const AddDepartment = () => {
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const validateNoSpaces = (value) => {
-        return (value + "").trim().length === 0 ? "Can not be empty value." : true;
-    };
-
+    const validateNoSpaces = validation.validateNoSpaces;
+   
     const handleAddDepartment = async (data) => {
         try {
             const responseServer = await adminService.addDepartmentService(data);
@@ -44,7 +43,7 @@ const AddDepartment = () => {
                                     validate: validateNoSpaces
                                 })}
                         />
-                         {errors.department && <small className='text-danger'>{errors.department.message}</small>}
+                        {errors.department && <small className='text-danger'>{errors.department.message}</small>}
                     </div>
                     <button type="submit" className="btn btn-success w-100">Submit</button>
                 </form>

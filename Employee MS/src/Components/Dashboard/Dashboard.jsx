@@ -84,7 +84,7 @@ const Dashboard = () => {
                         </ul>
                     </div>
                 </div>
-                <div className="col p-0 m-0">
+                <div className="col vh-100 position-relative">
                     <div className="p-2 d-flex justify-content-center bg-light shadow sticky-top">
                         <h4>Employee Management System</h4>
                     </div>

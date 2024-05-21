@@ -1,4 +1,4 @@
-import { React } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from 'react-redux'
@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import './Login.scss'
 
 import commonService from '../../Services/commonService.js';
+import validation from '../../utils/validations.js';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -15,9 +16,22 @@ const Login = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const validateNoSpaces = (value) => {
-        return value.trim().length === 0 ? "Please enter a valid username or password." : undefined;
-    };
+    const validateNoSpaces = validation.validateNoSpaces;
+
+    const renderInputField = (label, id, type, errorMessage) => (
+        <div className="form-group mb-2">
+            <label htmlFor={id}><strong>{label}: </strong></label>
+            <input
+                type={type}
+                className="form-control"
+                id={id}
+                placeholder={label}
+                autoComplete='on'
+                {...register(id, { required: errorMessage, validate: validateNoSpaces })}
+            ></input>
+            {errors[id] && <small className='text-warning'>{errors[id].message}</small>}
+        </div>
+    );
 
     const handleLogin = async (data) => {
         try {
@@ -49,30 +63,8 @@ const Login = () => {
             <div className='p-3 w-25 border rounded loginForm'>
                 <h2>Login Page</h2>
                 <form onSubmit={handleSubmit(handleLogin)}>
-                    <div className="form-group mb-2">
-                        <label htmlFor="username"><strong>Username: </strong></label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="username"
-                            placeholder="Username"
-                            autoComplete='on'
-                            {...register('username', { required: true, validate: validateNoSpaces })}
-                        ></input>
-                        {errors.username && <small className='text-warning'>This field is required</small>}
-                    </div>
-                    <div className="form-group mb-2">
-                        <label htmlFor="password">Password: </label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            placeholder="Password"
-                            autoComplete='on'
-                            {...register('password', { required: true, validate: validateNoSpaces })}
-                        ></input>
-                        {errors.password && <small className='text-warning'>This field is required</small>}
-                    </div>
+                    {renderInputField('Username', 'username', 'text', "Username is required")}
+                    {renderInputField('Password', 'password', 'password', "Password is required")}
                     <button type="submit" className="btn btn-primary mt-2 w-100">Submit</button>
                 </form>
             </div>

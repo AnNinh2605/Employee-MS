@@ -36,10 +36,7 @@ const AddEmployee = () => {
             toast.error('Error fetching position data: ' + error.response.data.message);
         }
     }
-
-    const validateNoSpaces = (value) => {
-        return (value + "").trim().length === 0 ? "Can not be empty value." : true;
-    };
+    const validateNoSpaces = validation.validateNoSpaces;
 
     const validateNonNegative = (value) => {
         return (value < 0) ? 'Salary cannot be negative' : true;

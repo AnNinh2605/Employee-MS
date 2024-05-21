@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import adminService from '../../Services/adminService.js';
+import validation from '../../utils/validations.js';
 
 const AddPosition = () => {
     const navigate = useNavigate();
@@ -22,9 +23,7 @@ const AddPosition = () => {
         }
     }
 
-    const validateNoSpaces = (value) => {
-        return (value + "").trim().length === 0 ? "Can not be empty value." : true;
-    };
+    const validateNoSpaces = validation.validateNoSpaces;
 
     const handleAddPosition = async (data) => {
         try {

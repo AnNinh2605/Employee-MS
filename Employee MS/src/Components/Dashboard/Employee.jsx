@@ -344,7 +344,7 @@ const Employee = () => {
                     </table>
                 </div>
             </div>
-            <footer>
+            <footer className='position-absolute start-50 translate-middle-x bottom-0'>
                 <ReactPaginate
                     nextLabel="next>"
                     onPageChange={(event) => handlePageChange(event.selected)}
@@ -363,7 +363,7 @@ const Employee = () => {
                     breakLabel="..."
                     breakClassName="page-item"
                     breakLinkClassName="page-link"
-                    containerClassName="pagination justify-content-center mb-0"
+                    containerClassName="pagination"
                     activeClassName="active"
                     renderOnZeroPageCount={null}
                 />

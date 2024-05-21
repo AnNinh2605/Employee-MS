@@ -23,5 +23,11 @@ const dateValidation = (employeeData) => {
 
     return true;
 };
-const validation = { dateValidation };
+
+const validateNoSpaces = (value) => {
+    return (value + "").trim().length === 0 ? "Invalid value. Input cannot contain only spaces." : true;
+};
+
+const validation = { dateValidation, validateNoSpaces };
+
 export default validation;

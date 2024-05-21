@@ -59,7 +59,7 @@ const Home = () => {
 
     return (
         <div>
-            <div className='p-3 d-flex justify-content-around mt-3'>
+            <div className='px-5 d-flex justify-content-between mt-5'>
                 <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
                     <div className='text-center pb-1'>
                         <h4>Admin</h4>
@@ -91,12 +91,13 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+
             <div className='mt-4 px-5 pt-3'>
                 <h3>List of Admins</h3>
                 <table className='table border table-hover'>
                     <thead>
                         <tr>
-                            <th>Email</th>
+                            <th>Admin name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
