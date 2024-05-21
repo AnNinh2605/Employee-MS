@@ -3,8 +3,8 @@ import Joi from 'joi';
 // Define schema
 const schemaValidate = Joi.object({
     name: Joi.string()
-        .alphanum()
-        .min(3)
+        .trim()
+        .min(1)
         .max(30)
         .required(),
 
@@ -22,17 +22,19 @@ const schemaValidate = Joi.object({
         .required(),
 
     address: Joi.string()
-        .pattern(/^((?!\s+$).)*$/)
-        .min(5)
+        .trim()
+        .min(1)
         .max(100)
         .required(),
 
     department_id: Joi.string()
-        .pattern(/^((?!\s+$).)*$/)
+        .trim()
+        .min(1)
         .required(),
 
     position_id: Joi.string()
-        .pattern(/^((?!\s+$).)*$/)
+        .trim()
+        .min(1)
         .required(),
 
     dob: Joi.date()
