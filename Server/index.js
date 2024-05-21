@@ -4,7 +4,7 @@ import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 
 //import route
-import authRoutes from './Router/adminRoutes.js'
+import authRoutes from './Router/authRoutes.js'
 import employeeRoutes from './Router/employeeRoutes.js'
 import commonRoutes from './Router/commonRoutes.js'
 
