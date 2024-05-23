@@ -8,4 +8,8 @@ const logoutService = () => {
     return axios.post('/logout')
 }
 
-export default { logoutService, loginService }
+const refreshTokenService = () => {
+    return axios.post('/token');
+}
+
+export default { logoutService, loginService, refreshTokenService }

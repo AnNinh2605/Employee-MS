@@ -17,6 +17,9 @@ const adminSchema = new Schema(
             type: String,
             required: [true, "role is required"],
             enum: ['admin', 'manager', 'staff']
+        },
+        refreshTokens: {
+            type: String
         }
     },
 );

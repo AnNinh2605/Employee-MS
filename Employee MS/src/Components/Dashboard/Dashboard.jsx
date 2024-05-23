@@ -1,22 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { jwtDecode } from "jwt-decode";
 import { toast } from 'react-toastify';
 
 import commonService from '../../Services/commonService';
 
 const Dashboard = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
     const handleLogout = async () => {
         try {
             await commonService.logoutService();
 
-            localStorage.removeItem("access_token");
+            localStorage.removeItem("accessToken");
             navigate('/');
         } catch (error) {
-            toast.error('Logout error: ' + error.response.data);
+            const errorMS = error.response ? error.response.data.message : 'An error occurred';
+            toast.error(errorMS);
         }
     }
+
+    const refreshToken = async () => {
+        try {
+            const responseServer = await commonService.refreshTokenService();
+            const accessToken = responseServer.data.data.accessToken;
+            const decodedToken = jwtDecode(accessToken);
+
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: decodedToken
+            })
+            
+            localStorage.setItem("accessToken", accessToken);
+        } catch (error) {
+            const errorMS = error.response ? error.response.data.message : 'An error occurred';
+            toast.error(errorMS);
+        }
+    };
+
+    useEffect(() => {
+        setInterval(() => {
+            refreshToken();
+        }, 14 * 60 * 1000); 
+    }, []);
+
 
     return (
         <div className="container-fluid">

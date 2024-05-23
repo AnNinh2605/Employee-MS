@@ -1,18 +1,19 @@
 import axios from "axios";
 
 const axiosConfig = () => {
-    axios.defaults.baseURL = 'https://employee-management-system-server-rl8m.onrender.com';
+    axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+
     axios.defaults.withCredentials = true;
 
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
         // Do something before request is sent
-        const notContainHeaderArrayUrl = ['/login', '/logout'];
+        const notContainHeaderUrl = ['/login', '/logout', '/token'];
         const url = config.url;
-        const isContainUrl = notContainHeaderArrayUrl.some(path => url.includes(path));
+        const isNotContainHeaderUrl = notContainHeaderUrl.some(path => url.includes(path));
 
-        if(!isContainUrl){
-            config.headers['Authorization'] = `Bearer ${localStorage.getItem("access_token")}`;
+        if(!isNotContainHeaderUrl){
+            config.headers['Authorization'] = `Bearer ${localStorage.getItem("accessToken")}`;
         }
         
         return config;

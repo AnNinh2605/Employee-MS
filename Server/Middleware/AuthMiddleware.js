@@ -6,8 +6,10 @@ const tokenMiddleware = (req, res, next) => {
     try {
         const headerToken = req.headers.authorization;
         const token = headerToken.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
         req.userId = decodedToken._id;
+        
         if (decodedToken) {
             next();
         }
