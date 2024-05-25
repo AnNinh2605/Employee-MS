@@ -36,8 +36,8 @@ const Login = () => {
     const handleLogin = async (data) => {
         try {
             const responseServer = await commonService.loginService(data);
-
-            const token = responseServer.data.data.access_token;
+            
+            const token = responseServer.data.data.accessToken;
             const decodedToken = jwtDecode(token);
 
             if (decodedToken.role === "admin") {
@@ -51,7 +51,7 @@ const Login = () => {
                 payload: decodedToken
             })
 
-            localStorage.setItem("access_token", token);
+            localStorage.setItem("accessToken", token);
         } catch (error) {
             const errorMS = error.response ? error.response.data.message : 'An error occurred';
             toast.error(errorMS);

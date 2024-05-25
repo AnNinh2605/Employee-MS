@@ -59,7 +59,7 @@ const fetchDepartment = async (req, res) => {
         if (!results || results.length === 0) {
             return res.status(404).json({
                 status: "error",
-                message: "No departments found"
+                message: "Department not found"
             });
         }
 
@@ -431,7 +431,7 @@ const fetchPosition = async (req, res) => {
         if (!results || results.length === 0) {
             return res.status(404).json({
                 status: "error",
-                message: "No positions found"
+                message: "Position not found"
             });
         }
 
