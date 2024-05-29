@@ -117,10 +117,55 @@ const fetchEmployee = async (req, res) => {
     const { itemsPerPage, itemOffset } = req.query;
 
     try {
-        const query = EmployeeModel.find({}, "-id -__v").populate('department_id', '-_id').populate('position_id', '-_id -department_id').lean();
-
+        const query = EmployeeModel.aggregate([
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "department_id",
+                    foreignField: "_id",
+                    as: "department"
+                }
+            },
+            {
+                $lookup: {
+                    from: "positions",
+                    localField: "position_id",
+                    foreignField: "_id",
+                    as: "position"
+                }
+            },
+            {
+                $unwind: "$department"
+            },
+            {
+                $unwind: "$position"
+            },
+            {
+                $project: {
+                    _id: 1, 
+                    name: 1,
+                    email: 1,
+                    phone: 1,
+                    dob: 1,
+                    address: 1,
+                    department_name: "$department.name",
+                    position_name: "$position.name",
+                    start_date: 1,
+                    salary: 1
+                }
+            },
+            {
+                $sort: {
+                    department_name: 1,
+                    position_name: 1,
+                    name: 1
+                }
+            }
+        ]);
+        
         if (!+itemsPerPage && !+itemOffset) {
             const results = await query.exec();
+
             return res.status(200).json({
                 status: "success",
                 message: "Get employee successfully",
@@ -382,6 +427,11 @@ const fetchDepartmentAndCountEmployee = async (req, res) => {
                     name: 1,
                     employeeCount: { $size: "$employee" },
                 }
+            },
+            {
+                $sort: {
+                    name: 1
+                }
             }
         ]);
         const responseDB = await query.skip(+itemOffset).limit(+itemsPerPage).exec();
@@ -475,6 +525,12 @@ const fetchPositionAndCountEmployee = async (req, res) => {
                     name: 1,
                     department: "$department.name",
                     employeeCount: { $size: "$employees" },
+                }
+            },
+            {
+                $sort: {
+                    department: 1,
+                    name: 1
                 }
             }
         ]);
