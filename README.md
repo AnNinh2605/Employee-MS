@@ -19,7 +19,11 @@ Develop Employee-MS web project including client and server side, supporting cre
 
 **Database:** MongoDB (Mongoose)
 
+## Demo
+
 **Demo:** https://employee-management-system-client.vercel.app
+- Username: admin
+- Password: 123456
 
 ## Experience Gained
 
