@@ -22,6 +22,8 @@ Develop Employee-MS web project including client and server side, supporting cre
 ## Demo
 
 **Demo:** https://employee-management-system-client.vercel.app
+
+When you log in to the demo, it may take a few moments to initialize. Please wait patiently while the server is getting ready.
 - Username: admin
 - Password: 123456
 
