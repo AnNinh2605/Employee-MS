@@ -7,7 +7,7 @@ import adminService from '../../Services/adminService.js';
 
 const Position = () => {
     const [position, setPosition] = useState([]);
-    
+
     const [itemOffset, setItemOffset] = useState(0); //itemOffset for paginate
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
@@ -26,7 +26,7 @@ const Position = () => {
             const responseServer = await adminService.fetchPositionAndCountEmployeeService(itemsPerPage, itemOffset);
 
             const responseData = responseServer.data.data;
-            
+
             setTotalPage(responseData.totalPage);
             setPosition(responseData.data);
         } catch (error) {
@@ -58,14 +58,16 @@ const Position = () => {
     }, [itemOffset])
 
     return (
-        <div className='px-5'>
+        <div className='px-3 px-sm-5'>
             <div className='mt-3'>
                 <div className='d-flex justify-content-center'>
                     <h3>Position List</h3>
                 </div>
-                <Link to="/dashboard/add_position" className='btn btn-success'>Add Position</Link>
+                <Link to="/dashboard/add_position" className='btn btn-success d-block d-sm-inline-block'>Add Position</Link>
             </div>
-            <div className='mt-2'>
+
+            {/* table */}
+            <div className='mt-2 table-responsive'>
                 <table className="table table-hover border text-center">
                     <thead>
                         <tr>
@@ -95,7 +97,9 @@ const Position = () => {
                     </tbody>
                 </table>
             </div>
-            <footer className='position-absolute start-50 translate-middle-x bottom-0'>
+
+            {/* pagination */}
+            <footer className='d-flex justify-content-center'>
                 <ReactPaginate
                     nextLabel="next>"
                     onPageChange={(event) => handlePageChange(event.selected)}
@@ -104,7 +108,7 @@ const Position = () => {
                     pageCount={totalPage}
                     forcePage={currentPage}
 
-                    previousLabel="< previous"
+                    previousLabel="<previous"
                     pageClassName="page-item"
                     pageLinkClassName="page-link"
                     previousClassName="page-item"

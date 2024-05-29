@@ -64,12 +64,12 @@ const AddEmployee = () => {
 
     return (
         <div className="d-flex justify-content-center align-items-center mt-3">
-            <div className="py-3 px-5 rounded w-75 border">
+            <div className="py-3 px-sm-5 px-3 rounded col-10 border">
                 <h3 className="text-center">Add Employee</h3>
                 <form className="row g-1 d-flex justify-content-between"
                     onSubmit={handleSubmit(handleAddEmployee)}
                 >
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="name" className="form-label">
                             Name
                         </label>
@@ -87,7 +87,8 @@ const AddEmployee = () => {
                         />
                         {errors.name && <small className='text-danger'>{errors.name.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label htmlFor="email" className="form-label">
                             Email
                         </label>
@@ -106,7 +107,8 @@ const AddEmployee = () => {
                         />
                         {errors.email && <small className='text-danger'>{errors.email.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label htmlFor="phone" className="form-label">
                             Phone
                         </label>
@@ -125,7 +127,8 @@ const AddEmployee = () => {
                         />
                         {errors.phone && <small className='text-danger'>{errors.phone.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label htmlFor="salary" className="form-label">
                             Salary
                         </label>
@@ -144,6 +147,7 @@ const AddEmployee = () => {
                         />
                         {errors.salary && <small className='text-danger'>{errors.salary.message}</small>}
                     </div>
+
                     <div className="col-12">
                         <label htmlFor="address" className="form-label">
                             Address
@@ -162,7 +166,8 @@ const AddEmployee = () => {
                         />
                         {errors.address && <small className='text-danger'>{errors.address.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label htmlFor="department_id" className="form-label">
                             Department
                         </label>
@@ -182,7 +187,8 @@ const AddEmployee = () => {
                         </select>
                         {errors.department_id && <small className='text-danger'>{errors.department_id.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label htmlFor="position_id" className="form-label">
                             Position
                         </label>
@@ -206,7 +212,8 @@ const AddEmployee = () => {
                         </select>
                         {errors.position_id && <small className='text-danger'>{errors.position_id.message}</small>}
                     </div>
-                    <div className="col-5">
+
+                    <div className="col-12 col-md-5">
                         <label className='form-label' htmlFor="dob">Date of Birth</label>
                         <input
                             className='form-control'
@@ -220,7 +227,8 @@ const AddEmployee = () => {
                         />
                         {errors.dob && <small className='text-danger'>{errors.dob.message}</small>}
                     </div>
-                    <div className="col-5 mb-3">
+
+                    <div className="col-12 col-md-5 mb-3">
                         <label className='form-label' htmlFor='start_date'>Start date</label>
                         <input
                             className='form-control'
@@ -232,7 +240,8 @@ const AddEmployee = () => {
                         />
                         {errors.start_date && <small className='text-danger'>{errors.start_date.message}</small>}
                     </div>
-                    <div className="col-6 mx-auto">
+
+                    <div className="col-12 col-md-6 mx-auto">
                         <button type="submit" className="btn btn-success w-100">
                             Add Employee
                         </button>

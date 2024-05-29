@@ -201,11 +201,12 @@ const Employee = () => {
 
     return (
         <>
-            <div className='px-5'>
+            <div className='px-3 px-sm-5'>
                 <div className='mt-3'>
                     <div className='text-center'>
                         <h3>Employee List</h3>
                     </div>
+
                     <div className='d-flex justify-content-between'>
                         <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
 
@@ -223,14 +224,18 @@ const Employee = () => {
                             <button className="btn btn-warning" onClick={exportToCSV}>Export</button>
                         </div>
                     </div>
+
                     <div className='mt-2'>
-                        <form onSubmit={handleSubmit(handleSearch)} className='d-flex justify-content-between gap-2'>
+                        <form
+                            onSubmit={handleSubmit(handleSearch)}
+                            className='d-flex flex-sm-row flex-column justify-content-between gap-2'
+                        >
                             <div className="input-group">
                                 <input
                                     type="search"
                                     className="form-control"
                                     id='name'
-                                    placeholder="Type your keywords..."
+                                    placeholder="Search employee..."
                                     {...register('name')}
                                 />
                             </div>
@@ -261,29 +266,33 @@ const Employee = () => {
                                 })}
                             </select>
 
-                            <button type="submit" className="btn btn-secondary border px-4">
+                            <button
+                                type="submit"
+                                className="btn btn-secondary border px-4">
                                 <i className="fa fa-search"></i>
                             </button>
                         </form>
                     </div>
                 </div>
-                <div className='mt-2'>
+
+                {/* // employee table */}
+                <div className='mt-2 table-responsive'>
                     <table className="table table-hover border">
                         <thead>
                             <tr>
                                 <th scope="col">No.</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Department</th>
                                 <th scope="col">Position</th>
-                                <th className='d-flex d-flex gap-1'>
-                                    <div role='button'>
-                                        <i className="pe-1 fa-solid fa-arrow-up-long"
-                                            onClick={() => handleSort('salary', 'asc')}
-                                        ></i>
-                                        <i className="fa-solid fa-arrow-down-long"
-                                            onClick={() => handleSort('salary', 'desc')}
-                                        ></i>
-                                    </div>
+                                <th scope="col">Department</th>
+                                <th className=''>
+                                    <i role='button'
+                                        className="pe-1 fa-solid fa-arrow-up-long"
+                                        onClick={() => handleSort('salary', 'asc')}
+                                    ></i>
+                                    <i role='button'
+                                        className="pe-1 fa-solid fa-arrow-down-long"
+                                        onClick={() => handleSort('salary', 'desc')}
+                                    ></i>
                                     <span>Salary</span>
                                 </th>
                                 <th scope="col">Detail</th>
@@ -296,8 +305,8 @@ const Employee = () => {
                                         <tr>
                                             <td>{itemOffset + index + 1}</td>
                                             <td>{item.name}</td>
-                                            <td>{item.department_id.name}</td>
-                                            <td>{item.position_id.name}</td>
+                                            <td>{item.position_name}</td>
+                                            <td>{item.department_name}</td>
                                             <td>{item.salary}</td>
                                             <td>
                                                 <button className="btn btn-success btn-sm"
@@ -344,7 +353,8 @@ const Employee = () => {
                     </table>
                 </div>
             </div>
-            <footer className='position-absolute start-50 translate-middle-x bottom-0'>
+            
+            <footer className='d-flex justify-content-center'>
                 <ReactPaginate
                     nextLabel="next>"
                     onPageChange={(event) => handlePageChange(event.selected)}
@@ -353,7 +363,7 @@ const Employee = () => {
                     pageCount={totalPage}
                     forcePage={currentPage}
 
-                    previousLabel="< previous"
+                    previousLabel="<previous"
                     pageClassName="page-item"
                     pageLinkClassName="page-link"
                     previousClassName="page-item"

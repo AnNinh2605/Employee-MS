@@ -42,7 +42,7 @@ const AddPosition = () => {
 
     return (
         <div className='d-flex justify-content-center align-items-center'>
-            <div className='p-3 w-25 border rounded mt-5'>
+            <div className='p-3 col-10 col-md-6 col-xl-3 border rounded mt-5'>
                 <h2>Add Position</h2>
                 <form onSubmit={handleSubmit(handleAddPosition)} className='form-group d-flex flex-column gap-2'>
                     <div className="form-group">

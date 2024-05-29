@@ -59,9 +59,9 @@ const Home = () => {
 
     return (
         <div>
-            <div className='px-5 d-flex justify-content-between mt-5'>
-                <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
-                    <div className='text-center pb-1'>
+            <div className='px-3 px-sm-5 d-flex flex-sm-row flex-column justify-content-between mt-5'>
+                <div className='p-3 shadow-sm col-12 col-sm-3'>
+                    <div className='text-center'>
                         <h4>Admin</h4>
                     </div>
                     <hr />
@@ -70,8 +70,8 @@ const Home = () => {
                         <h5>{adminCount}</h5>
                     </div>
                 </div>
-                <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
-                    <div className='text-center pb-1'>
+                <div className='p-3 shadow-sm col-3 col-12 col-sm-3'>
+                    <div className='text-center'>
                         <h4>Employee</h4>
                     </div>
                     <hr />
@@ -80,8 +80,8 @@ const Home = () => {
                         <h5>{employeeCount}</h5>
                     </div>
                 </div>
-                <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
-                    <div className='text-center pb-1'>
+                <div className='p-3 shadow-sm col-3 col-12 col-sm-3'>
+                    <div className='text-center'>
                         <h4>Salary</h4>
                     </div>
                     <hr />
@@ -92,7 +92,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className='mt-4 px-5 pt-3'>
+            <div className='mt-4 px-5 pt-3 table-responsive'>
                 <h3>List of Admins</h3>
                 <table className='table border table-hover'>
                     <thead>

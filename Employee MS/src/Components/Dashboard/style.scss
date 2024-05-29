@@ -1,11 +1,17 @@
-.employee_image {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 
-.employee_detail_image {
-    border-radius: 50%;
-    width: 300px;
-    height: 300px;
+    .employee_image {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+    }
+
+    .employee_detail_image {
+        border-radius: 50%;
+        width: 300px;
+        height: 300px;
+    }
 }

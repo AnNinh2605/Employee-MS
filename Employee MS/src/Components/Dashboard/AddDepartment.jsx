@@ -25,7 +25,7 @@ const AddDepartment = () => {
 
     return (
         <div className='d-flex justify-content-center align-items-center'>
-            <div className='p-3 w-25 border rounded mt-5'>
+            <div className='p-3 col-10 col-md-6 col-xl-3 border rounded mt-5'>
                 <h2>Add Department</h2>
                 <form onSubmit={handleSubmit(handleAddDepartment)}>
                     <div className="form-group mb-2">

@@ -96,12 +96,12 @@ const EditEmployee = () => {
 
     return (
         <div className="d-flex justify-content-center align-items-center mt-3">
-            <div className="py-3 px-5 rounded w-75 border">
+            <div className="py-3 px-sm-5 px-3 col-10 rounded border">
                 <h3 className="text-center">Edit Employee</h3>
                 <form
                     className="row g-1 d-flex justify-content-between"
                     onSubmit={handleSubmit(handleEditEmployee)}>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="name" className="form-label">
                             Name
                         </label>
@@ -115,7 +115,7 @@ const EditEmployee = () => {
                         />
                         {errors.name && <small className='text-danger'>{errors.name.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="email" className="form-label">
                             Email
                         </label>
@@ -132,7 +132,7 @@ const EditEmployee = () => {
                         />
                         {errors.email && <small className='text-danger'>{errors.email.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="phone" className="form-label">
                             Phone
                         </label>
@@ -150,7 +150,7 @@ const EditEmployee = () => {
                         />
                         {errors.phone && <small className='text-danger'>{errors.phone.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="salary" className="form-label">
                             Salary
                         </label>
@@ -185,7 +185,7 @@ const EditEmployee = () => {
                         />
                         {errors.address && <small className='text-danger'>{errors.address.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="department_id" className="form-label">
                             Department
                         </label>
@@ -205,7 +205,7 @@ const EditEmployee = () => {
                         </select>
                         {errors.department_id && <small className='text-danger'>{errors.department_id.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label htmlFor="position_id" className="form-label">
                             Position
                         </label>
@@ -227,7 +227,7 @@ const EditEmployee = () => {
                         </select>
                         {errors.position_id && <small className='text-danger'>{errors.position_id.message}</small>}
                     </div>
-                    <div className="col-5">
+                    <div className="col-12 col-md-5">
                         <label className='form-label' htmlFor="dob">Date of Birth</label>
                         <input
                             className='form-control'
@@ -241,7 +241,7 @@ const EditEmployee = () => {
                         />
                         {errors.dob && <small className='text-danger'>{errors.dob.message}</small>}
                     </div>
-                    <div className="col-5 mb-3">
+                    <div className="col-12 col-md-5 mb-3">
                         <label className='form-label' htmlFor='start_date'>Start date</label>
                         <input
                             className='form-control'
@@ -255,9 +255,9 @@ const EditEmployee = () => {
                         />
                         {errors.start_date && <small className='text-danger'>{errors.start_date.message}</small>}
                     </div>
-                    <div className="col-6 mx-auto">
+                    <div className="col-12 col-md-6 mx-auto">
                         <button type="submit" className="btn btn-primary w-100">
-                            Save update Employee
+                            Update Employee
                         </button>
                     </div>
                 </form>

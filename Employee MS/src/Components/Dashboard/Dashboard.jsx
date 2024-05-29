@@ -41,17 +41,18 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        setInterval(() => {
+        const interval = setInterval(() => {
             refreshToken();
         }, 14 * 60 * 1000); 
-    }, []);
 
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="container-fluid">
-            <div className="row flex-nowrap">
+            <div className="row flex-nowrap min-vh-100">
                 <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-                    <div className="d-flex flex-column align-items-center align-items-sm-start px-1 pt-2 text-white min-vh-100">
+                    <div className="d-flex flex-column align-items-center align-items-sm-start px-1 pt-2 text-white">
                         <Link
                             to="/dashboard"
                             className="d-flex align-items-center pb-3 mb-md-1 mt-md-3 me-md-auto text-white text-decoration-none"
@@ -86,20 +87,20 @@ const Dashboard = () => {
                             </li>
                             <li className="w-100">
                                 <Link
-                                    to="/dashboard/department"
-                                    className="nav-link px-0 align-middle text-white"
-                                >
-                                    <i className="fs-4 bi-columns ms-2"></i>
-                                    <span className="ms-2 d-none d-sm-inline">Manage Departments</span>
-                                </Link>
-                            </li>
-                            <li className="w-100">
-                                <Link
                                     to="/dashboard/position"
                                     className="nav-link px-0 align-middle text-white"
                                 >
                                     <i className="fs-4 bi-person ms-2"></i>
                                     <span className="ms-2 d-none d-sm-inline">Manage Positions</span>
+                                </Link>
+                            </li>
+                            <li className="w-100">
+                                <Link
+                                    to="/dashboard/department"
+                                    className="nav-link px-0 align-middle text-white"
+                                >
+                                    <i className="fs-4 bi-columns ms-2"></i>
+                                    <span className="ms-2 d-none d-sm-inline">Manage Departments</span>
                                 </Link>
                             </li>
                             <li className="w-100" onClick={() => handleLogout()}>
@@ -113,9 +114,10 @@ const Dashboard = () => {
                         </ul>
                     </div>
                 </div>
-                <div className="col vh-100 position-relative">
+
+                <div className="col p-0">
                     <div className="p-2 d-flex justify-content-center bg-light shadow sticky-top">
-                        <h4>Employee Management System</h4>
+                        <h4 className='fs-4'>Employee Management System</h4>
                     </div>
                     <Outlet />
                 </div>

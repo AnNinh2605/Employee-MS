@@ -41,6 +41,7 @@ const Login = () => {
             const decodedToken = jwtDecode(token);
 
             if (decodedToken.role === "admin") {
+                localStorage.setItem("accessToken", token);
                 navigate('/dashboard');
             } else {
                 navigate(`/employeeDetail/${decodedToken._id}`);
@@ -51,7 +52,6 @@ const Login = () => {
                 payload: decodedToken
             })
 
-            localStorage.setItem("accessToken", token);
         } catch (error) {
             const errorMS = error.response ? error.response.data.message : 'An error occurred';
             toast.error(errorMS);
@@ -60,7 +60,7 @@ const Login = () => {
 
     return (
         <div className='d-flex justify-content-center align-items-center vh-100 loginPage'>
-            <div className='p-3 w-25 border rounded loginForm'>
+            <div className='p-3 col-10 col-md-6 col-xl-3 border rounded loginForm'>
                 <h2>Login Page</h2>
                 <form onSubmit={handleSubmit(handleLogin)}>
                     {renderInputField('Username', 'username', 'text', "Username is required")}

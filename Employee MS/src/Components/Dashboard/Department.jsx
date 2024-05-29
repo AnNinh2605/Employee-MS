@@ -11,7 +11,7 @@ const Department = () => {
     const [itemOffset, setItemOffset] = useState(0); //itemOffset for paginate
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
-    
+
     const itemsPerPage = 6; //itemsPerPage for paginate
 
     const handlePageChange = (selected) => {
@@ -26,7 +26,7 @@ const Department = () => {
             const responseServer = await adminService.fetchDepartmentAndCountEmployeeService(itemsPerPage, itemOffset);
 
             const responseData = responseServer.data.data;
-            
+
             setTotalPage(responseData.totalPage);
             setDepartment(responseData.data);
         } catch (error) {
@@ -58,42 +58,45 @@ const Department = () => {
     }, [itemOffset])
 
     return (
-        <div className='px-5'>
-            <div className='mt-3'>
-                <div className='d-flex justify-content-center'>
-                    <h3>Department List</h3>
+        <>
+            <div className='px-3 px-sm-5'>
+                <div className='mt-3'>
+                    <h3 className='text-center'>Department List</h3>
+                    <Link to="/dashboard/add_department" className='btn btn-success d-block d-sm-inline-block'>Add Department</Link>
                 </div>
-                <Link to="/dashboard/add_department" className='btn btn-success'>Add Department</Link>
+
+                {/* table */}
+                <div className='mt-2 table-responsive'>
+                    <table className="table table-hover border text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Number of employees</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {department.map((item, index) => {
+                                return (
+                                    <tr key={`department-${index}`}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.employeeCount}</td>
+                                        <td>
+                                            <button className='btn btn-danger btn-sm'
+                                                onClick={() => deleteDepartment(item._id)}
+                                            >Delete</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div className='mt-2'>
-                <table className="table table-hover border text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Department</th>
-                            <th scope="col">Number of employees</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {department.map((item, index) => {
-                            return (
-                                <tr key={`department-${index}`}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.employeeCount}</td>
-                                    <td>
-                                        <button className='btn btn-danger btn-sm'
-                                            onClick={() => deleteDepartment(item._id)}
-                                        >Delete</button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            <footer className='position-absolute start-50 translate-middle-x bottom-0'>
+
+            <footer className='d-flex justify-content-center'>
                 <ReactPaginate
                     nextLabel="next>"
                     onPageChange={(event) => handlePageChange(event.selected)}
@@ -102,7 +105,7 @@ const Department = () => {
                     pageCount={totalPage}
                     forcePage={currentPage}
 
-                    previousLabel="< previous"
+                    previousLabel="<previous"
                     pageClassName="page-item"
                     pageLinkClassName="page-link"
                     previousClassName="page-item"
@@ -117,7 +120,7 @@ const Department = () => {
                     renderOnZeroPageCount={null}
                 />
             </footer>
-        </div>
+        </>
     );
 }
 
