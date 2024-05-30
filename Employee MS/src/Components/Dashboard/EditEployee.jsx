@@ -92,9 +92,10 @@ const EditEmployee = () => {
     }
 
     useEffect(() => {
-        fetchDepartment();
-        fetchPosition();
-        fetchEmployeeById();
+        fetchDepartment()
+            .then(() => fetchPosition())
+            .then(() => fetchEmployeeById())
+            .catch(error => toast.error('Error fetching data:', error));
     }, [])
 
 
