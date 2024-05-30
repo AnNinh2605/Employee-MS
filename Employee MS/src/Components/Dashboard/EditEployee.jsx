@@ -13,13 +13,13 @@ const EditEmployee = () => {
     const { _id } = useParams();
 
     const selectedDepartment = watch('department_id');     // track changing value of department input
-
-    //filteredPositions to show positions based on department
-    const [filteredPositions, setFilteredPositions] = useState([]);
-
+ 
     const [department, setDepartment] = useState([]);
     const [position, setPosition] = useState([]);
-
+    
+    //filteredPositions to show positions based on department
+    const [filteredPositions, setFilteredPositions] = useState([]);
+    
     const formatDateTo_yyyymmdd = (dateString) => {
         return dateString.slice(0, 10);
     }
@@ -41,7 +41,7 @@ const EditEmployee = () => {
                 dob: formatDateTo_yyyymmdd(data.dob),
                 start_date: formatDateTo_yyyymmdd(data.start_date)
             }
-
+            
             // set value for react hook form
             Object.keys(listEmployee).forEach(key => {
                 setValue(key, listEmployee[key]);
@@ -68,6 +68,7 @@ const EditEmployee = () => {
 
             const data = results.data.data;
             setPosition(data);
+            setFilteredPositions(data)
         } catch (error) {
             toast.error('Error fetching position data: ' + error.response.data.message);
         }
@@ -92,20 +93,19 @@ const EditEmployee = () => {
     }
 
     useEffect(() => {
-        fetchDepartment()
-            .then(() => fetchPosition())
-            .then(() => fetchEmployeeById())
-            .catch(error => toast.error('Error fetching data:', error));
-    }, [])
-
-
-    useEffect(() => {
         if (selectedDepartment) {
             const filtered = position.filter(position => position.department_id === selectedDepartment);
             setFilteredPositions(filtered);
         }
     }, [selectedDepartment]);
 
+    useEffect(() => {
+        fetchDepartment()
+            .then(() => fetchPosition())
+            .then(() => fetchEmployeeById())
+            .catch(error => toast.error('Error fetching data:', error));
+    }, [])
+    
     return (
         <div className="d-flex justify-content-center align-items-center mt-3">
             <div className="py-3 px-sm-5 px-3 col-10 rounded border">
