@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
+import _ from 'lodash'
 
 import adminService from '../../Services/adminService.js';
 
@@ -53,6 +54,12 @@ const Position = () => {
         }
     }
 
+    const handleSort = (Field, By) => {
+        let clonePosition = _.cloneDeep(position);
+        clonePosition = _.orderBy(clonePosition, [Field], [By]);
+        setPosition(clonePosition);
+    }
+
     useEffect(() => {
         fetchPositionAndCountEmployee(itemsPerPage, itemOffset);
     }, [itemOffset])
@@ -72,9 +79,19 @@ const Position = () => {
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
+                            <th scope="col">
+                                <i role='button'
+                                    className="pe-1 fa-solid fa-arrow-up-long"
+                                    onClick={() => handleSort('employeeCount', 'desc')}
+                                ></i>
+                                <i role='button'
+                                    className="pe-2 fa-solid fa-arrow-down-long"
+                                    onClick={() => handleSort('employeeCount', 'asc')}
+                                ></i>
+                                Number of employees
+                            </th>
                             <th scope="col">Position</th>
                             <th scope="col">Department</th>
-                            <th scope="col">Number of employees</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -83,9 +100,9 @@ const Position = () => {
                             return (
                                 <tr key={`position-${index}`}>
                                     <td>{itemOffset + index + 1}</td>
+                                    <td>{item.employeeCount}</td>
                                     <td>{item.name}</td>
                                     <td>{item.department}</td>
-                                    <td>{item.employeeCount}</td>
                                     <td>
                                         <button className='btn btn-danger btn-sm'
                                             onClick={() => deletePosition(item._id)}

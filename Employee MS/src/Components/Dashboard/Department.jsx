@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
+import _ from 'lodash';
 
 import adminService from '../../Services/adminService.js';
 
@@ -53,6 +54,12 @@ const Department = () => {
         }
     }
 
+    const handleSort = (Field, By) => {
+        let cloneDepartment = _.cloneDeep(department);
+        cloneDepartment = _.orderBy(cloneDepartment, [Field], [By]);
+        setDepartment(cloneDepartment);
+    }
+
     useEffect(() => {
         fetchDepartmentAndCountEmployee(itemsPerPage, itemOffset);
     }, [itemOffset])
@@ -71,8 +78,18 @@ const Department = () => {
                         <thead>
                             <tr>
                                 <th scope="col">No.</th>
+                                <th scope="col">
+                                    <i role='button'
+                                        className="pe-1 fa-solid fa-arrow-up-long"
+                                        onClick={() => handleSort('employeeCount', 'desc')}
+                                    ></i>
+                                    <i role='button'
+                                        className="pe-2 fa-solid fa-arrow-down-long"
+                                        onClick={() => handleSort('employeeCount', 'asc')}
+                                    ></i>
+                                    Number of employees
+                                </th>
                                 <th scope="col">Department</th>
-                                <th scope="col">Number of employees</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -81,8 +98,8 @@ const Department = () => {
                                 return (
                                     <tr key={`department-${index}`}>
                                         <td>{index + 1}</td>
-                                        <td>{item.name}</td>
                                         <td>{item.employeeCount}</td>
+                                        <td>{item.name}</td>
                                         <td>
                                             <button className='btn btn-danger btn-sm'
                                                 onClick={() => deleteDepartment(item._id)}

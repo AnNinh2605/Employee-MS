@@ -287,13 +287,13 @@ const Employee = () => {
                                 <th className=''>
                                     <i role='button'
                                         className="pe-1 fa-solid fa-arrow-up-long"
-                                        onClick={() => handleSort('salary', 'asc')}
-                                    ></i>
-                                    <i role='button'
-                                        className="pe-1 fa-solid fa-arrow-down-long"
                                         onClick={() => handleSort('salary', 'desc')}
                                     ></i>
-                                    <span>Salary</span>
+                                    <i role='button'
+                                        className="pe-2 fa-solid fa-arrow-down-long"
+                                        onClick={() => handleSort('salary', 'asc')}
+                                    ></i>
+                                    Salary
                                 </th>
                                 <th scope="col">Detail</th>
                             </tr>
@@ -352,8 +352,9 @@ const Employee = () => {
                         </tbody>
                     </table>
                 </div>
+                {employee && employee.length == 0 && <div className='text-center lead'>Not found employee</div>}
             </div>
-            
+
             <footer className='d-flex justify-content-center'>
                 <ReactPaginate
                     nextLabel="next>"
