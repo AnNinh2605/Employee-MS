@@ -72,7 +72,7 @@ const login = async (req, res) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict',
+            sameSite: 'Lax',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
 
@@ -113,7 +113,7 @@ const logout = async (req, res) => {
     }
 
     try {
-        res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: 'Strict' });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: true, SameSite: 'Lax' });
 
         // remove refreshToken to database
         await AdminModel.updateOne(
@@ -139,10 +139,10 @@ const refreshToken = async (req, res) => {
             message: "No refresh token provided"
         });
     }
-    
+
     try {
         const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        
+
         const user = await AdminModel.findById(decodedToken._id);
 
         if (!user || !user.refreshTokens.includes(refreshToken)) {
@@ -154,7 +154,7 @@ const refreshToken = async (req, res) => {
             username: user.username,
             role: user.role,
         }
-        
+
         const accessToken = generateAccessToken(payload);
 
         return res.status(200).json({
