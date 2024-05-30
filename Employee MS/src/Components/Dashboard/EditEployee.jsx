@@ -8,11 +8,14 @@ import validation from '../../utils/validations.js'
 
 const EditEmployee = () => {
     const navigate = useNavigate();
-
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-    const selectedDepartment = watch('department_id');     // track changing value of department input
 
     const { _id } = useParams();
+
+    const selectedDepartment = watch('department_id');     // track changing value of department input
+
+    //filteredPositions to show positions based on department
+    const [filteredPositions, setFilteredPositions] = useState([]);
 
     const [department, setDepartment] = useState([]);
     const [position, setPosition] = useState([]);
@@ -93,6 +96,14 @@ const EditEmployee = () => {
         fetchPosition();
         fetchEmployeeById();
     }, [])
+
+
+    useEffect(() => {
+        if (selectedDepartment) {
+            const filtered = position.filter(position => position.department_id === selectedDepartment);
+            setFilteredPositions(filtered);
+        }
+    }, [selectedDepartment]);
 
     return (
         <div className="d-flex justify-content-center align-items-center mt-3">
@@ -200,7 +211,7 @@ const EditEmployee = () => {
                         >
                             <option value="">Select department</option>
                             {department.map((item, index) => {
-                                return <option key={`department_id-${index}`} value={item._id}>{item.name}</option>;
+                                return (<option key={`department_id-${index}`} value={item._id}>{item.name}</option>);
                             })}
                         </select>
                         {errors.department_id && <small className='text-danger'>{errors.department_id.message}</small>}
@@ -219,10 +230,8 @@ const EditEmployee = () => {
                                 })}
                         >
                             <option value="">Select position</option>
-                            {position.map((item, index) => {
-                                if (item.department_id === selectedDepartment) {
-                                    return (<option key={`position_id-${index}`} value={item._id}>{item.name}</option>);
-                                }
+                            {filteredPositions.map((item, index) => {
+                                return (<option key={`position_id-${index}`} value={item._id}>{item.name}</option>);
                             })}
                         </select>
                         {errors.position_id && <small className='text-danger'>{errors.position_id.message}</small>}
