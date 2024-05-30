@@ -72,7 +72,7 @@ const login = async (req, res) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'Lax',
+            sameSite: 'None',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
 
@@ -113,7 +113,7 @@ const logout = async (req, res) => {
     }
 
     try {
-        res.clearCookie("refreshToken", { httpOnly: true, secure: true, SameSite: 'Lax' });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: true, SameSite: 'None' });
 
         // remove refreshToken to database
         await AdminModel.updateOne(
