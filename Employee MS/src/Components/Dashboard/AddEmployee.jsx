@@ -167,7 +167,7 @@ const AddEmployee = () => {
                         {errors.address && <small className='text-danger'>{errors.address.message}</small>}
                     </div>
 
-                    <div className="col-12 col-md-5">
+                    <div className="col-12 col-md-5 form-group">
                         <label htmlFor="department_id" className="form-label">
                             Department
                         </label>
