@@ -7,8 +7,8 @@ const addDepartmentService = (department) => {
 const fetchDepartmentService = () => {
     return axios.get('/auth/department');
 }
-const searchEmployeeService = (name, position_id, department_id, itemsPerPage) => {
-    return axios.get(`/auth/search?name=${name}&position_id=${position_id}&department_id=${department_id}&itemsPerPage=${itemsPerPage}`);
+const searchEmployeeService = (name, position_id, department_id, itemsPerPage, itemOffset) => {
+    return axios.get(`/auth/search?name=${name}&position_id=${position_id}&department_id=${department_id}&itemsPerPage=${itemsPerPage}&itemOffset=${itemOffset}`);
 }
 const fetchDepartmentAndCountEmployeeService = (itemsPerPage, itemOffset) => {
     return axios.get(`/auth/fetchDepartmentAndCountEmployee?itemsPerPage=${itemsPerPage}&itemOffset=${itemOffset}`);

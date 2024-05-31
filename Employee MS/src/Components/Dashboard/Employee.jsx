@@ -24,6 +24,9 @@ const Employee = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
 
+    // state to save search conditions, used to change pages when searching
+    const [searchCondition, setSearchCondition] = useState({});
+
     const itemsPerPage = 6; //itemsPerPage for paginate
 
     const formatDateTo_ddmmyyyy = (dateString) => {
@@ -152,6 +155,8 @@ const Employee = () => {
     const handleSearch = async (data) => {
         const { name, position_id, department_id } = data;
 
+        setSearchCondition(data);
+
         // reset to page 1 when click search button with empty input
         if (!name && !position_id && !department_id) {
             fetchEmployee(itemsPerPage, 0);
@@ -160,7 +165,7 @@ const Employee = () => {
         }
 
         try {
-            const results = await adminService.searchEmployeeService(name, position_id, department_id, itemsPerPage);
+            const results = await adminService.searchEmployeeService(name, position_id, department_id, itemsPerPage, itemOffset);
 
             const responseData = results.data.data;
 
@@ -196,7 +201,18 @@ const Employee = () => {
     useEffect(() => {
         fetchDepartment();
         fetchPosition();
-        fetchEmployee(itemsPerPage, itemOffset);
+    }, [])
+
+    useEffect(() => {
+        // hasNonEmpty to check at least one key-value in searchCondition is not empty
+        const hasNonEmpty = _.some(searchCondition, value => value !== '');
+
+        if (hasNonEmpty) {
+            handleSearch(searchCondition);
+        }
+        else {
+            fetchEmployee(itemsPerPage, itemOffset);
+        }
     }, [itemOffset])
 
     return (
@@ -225,6 +241,7 @@ const Employee = () => {
                         </div>
                     </div>
 
+                    {/* search employee */}
                     <div className='mt-2'>
                         <form
                             onSubmit={handleSubmit(handleSearch)}
@@ -241,19 +258,6 @@ const Employee = () => {
                             </div>
 
                             <select
-                                id="department_id"
-                                className='form-select'
-                                {...register('department_id')}
-                            >
-                                <option value="">Select department</option>
-                                {department.map((item, index) => {
-                                    return (
-                                        <option key={`department-${index}`} value={item._id}>{item.name}</option>
-                                    )
-                                })}
-                            </select>
-
-                            <select
                                 className='form-select'
                                 id="position_id"
                                 {...register('position_id')}
@@ -262,6 +266,19 @@ const Employee = () => {
                                 {position.map((item, index) => {
                                     return (
                                         <option key={`position-${index}`} value={item._id}>{item.name}</option>
+                                    )
+                                })}
+                            </select>
+
+                            <select
+                                id="department_id"
+                                className='form-select'
+                                {...register('department_id')}
+                            >
+                                <option value="">Select department</option>
+                                {department.map((item, index) => {
+                                    return (
+                                        <option key={`department-${index}`} value={item._id}>{item.name}</option>
                                     )
                                 })}
                             </select>
