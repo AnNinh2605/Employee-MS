@@ -70,7 +70,7 @@ const Position = () => {
                 <div className='d-flex justify-content-center'>
                     <h3>Position List</h3>
                 </div>
-                <Link to="/dashboard/add_position" className='btn btn-success d-block d-sm-inline-block'>Add Position</Link>
+                <Link to="/dashboard/add-position" className='btn btn-success d-block d-sm-inline-block'>Add Position</Link>
             </div>
 
             {/* table */}

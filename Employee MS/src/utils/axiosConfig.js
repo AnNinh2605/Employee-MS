@@ -8,14 +8,14 @@ const axiosConfig = () => {
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
         // Do something before request is sent
-        const notContainHeaderUrl = ['/login', '/logout', '/token'];
+        const notContainHeaderUrl = ['/login', '/logout', '/refresh-token'];
         const url = config.url;
         const isNotContainHeaderUrl = notContainHeaderUrl.some(path => url.includes(path));
 
-        if(!isNotContainHeaderUrl){
+        if (!isNotContainHeaderUrl) {
             config.headers['Authorization'] = `Bearer ${localStorage.getItem("accessToken")}`;
         }
-        
+
         return config;
     }, function (error) {
         // Do something with request error

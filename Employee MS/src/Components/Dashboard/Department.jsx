@@ -69,7 +69,7 @@ const Department = () => {
             <div className='px-3 px-sm-5'>
                 <div className='mt-3'>
                     <h3 className='text-center'>Department List</h3>
-                    <Link to="/dashboard/add_department" className='btn btn-success d-block d-sm-inline-block'>Add Department</Link>
+                    <Link to="/dashboard/add-department" className='btn btn-success d-block d-sm-inline-block'>Add Department</Link>
                 </div>
 
                 {/* table */}

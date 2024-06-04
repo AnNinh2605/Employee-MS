@@ -14,7 +14,7 @@ import NotFound from './Components/Dashboard/NotFound.jsx';
 
 import Employee from './Components/Dashboard/Employee.jsx'
 import AddEmployee from './Components/Dashboard/AddEmployee.jsx';
-import EditEployee from './Components/Dashboard/EditEployee.jsx';
+import EditEmployee from './Components/Dashboard/EditEmployee.jsx';
 
 import Position from './Components/Dashboard/Position.jsx'
 import AddPosition from './Components/Dashboard/AddPosition.jsx';
@@ -35,13 +35,15 @@ function App() {
                     }>
                         <Route path='' element={<Home />} />
                         <Route path='/dashboard/employee' element={<Employee />} ></Route>
+                        <Route path='/dashboard/add-employee' element={<AddEmployee />} ></Route>
+
                         <Route path='/dashboard/department' element={<Department />} ></Route>
+                        <Route path='/dashboard/add-department' element={<AddDepartment />} ></Route>
+
                         <Route path='/dashboard/position' element={<Position />} ></Route>
-                        <Route path='/dashboard/add_position' element={<AddPosition />} ></Route>
-                        
-                        <Route path='/dashboard/add_department' element={<AddDepartment />} ></Route>
-                        <Route path='/dashboard/add_employee' element={<AddEmployee />} ></Route>
-                        <Route path='/dashboard/edit_employee/:_id' element={<EditEployee />} ></Route>
+                        <Route path='/dashboard/add-position' element={<AddPosition />} ></Route>
+
+                        <Route path='/dashboard/edit-employee/:_id' element={<EditEmployee />} ></Route>
                     </Route>
                     <Route path='*' element={<NotFound />} />
                 </Routes>

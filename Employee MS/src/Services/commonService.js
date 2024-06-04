@@ -9,7 +9,7 @@ const logoutService = () => {
 }
 
 const refreshTokenService = () => {
-    return axios.post('/token');
+    return axios.post('/refresh-token');
 }
 
 export default { logoutService, loginService, refreshTokenService }

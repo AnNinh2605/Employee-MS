@@ -25,9 +25,9 @@ app.use(cookieParser())
 app.use(express.static('Public'))
 
 //route
-app.use('/', commonRoutes)
-app.use('/employee', tokenMiddleware.tokenMiddleware, employeeRoutes)
-app.use('/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], authRoutes)
+app.use('/api', commonRoutes)
+app.use('/api/employee', tokenMiddleware.tokenMiddleware, employeeRoutes)
+app.use('/api/auth', [tokenMiddleware.tokenMiddleware, tokenMiddleware.isAdmin], authRoutes)
 
 connectDB();
 

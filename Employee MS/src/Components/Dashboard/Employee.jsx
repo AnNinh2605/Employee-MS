@@ -96,7 +96,7 @@ const Employee = () => {
     const exportToCSV = async () => {
         try {
             const responseServer = await adminService.fetchEmployeeService(0, 0);
-
+            
             const responseData = responseServer.data.data;
 
             if (!responseData || responseData.length === 0) {
@@ -105,12 +105,10 @@ const Employee = () => {
             }
 
             const dataExport = responseData.map(item => {
-                const { _id, dob, department_id, position_id, start_date, ...restData } = item;
+                const { _id, dob, start_date, ...restData } = item;
                 return {
                     ...restData,
                     dob: dob.slice(0, 10),
-                    department: department_id.name,
-                    position: position_id.name,
                     start_date: start_date.slice(0, 10)
                 }
             })
@@ -224,7 +222,7 @@ const Employee = () => {
                     </div>
 
                     <div className='d-flex justify-content-between'>
-                        <Link to="/dashboard/add_employee" className='btn btn-success'>Add Employee</Link>
+                        <Link to="/dashboard/add-employee" className='btn btn-success'>Add Employee</Link>
 
                         <div className='d-flex'>
                             <label className='btn btn-primary me-2' htmlFor='import'>Import</label>
@@ -347,7 +345,7 @@ const Employee = () => {
                                                     <td>{item.phone}</td>
                                                     <td>{item.dob}</td>
                                                     <td colSpan="2" rowSpan={3} className='border text-center align-middle'>
-                                                        <Link to={`/dashboard/edit_employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
+                                                        <Link to={`/dashboard/edit-employee/${item._id}`} className='btn btn-warning btn-sm me-2'>Edit</Link>
                                                         <button className='btn btn-danger btn-sm' onClick={() => handleDeleteEmployee(item._id)}>Delete</button>
                                                     </td>
                                                 </tr>
