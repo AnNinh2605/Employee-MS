@@ -24,7 +24,7 @@ Develop Employee-MS web project including client and server side, supporting cre
 **Demo:** https://employee-management-system-client.vercel.app
 
 When you log in to the demo, it may take a few moments to initialize. Please wait patiently while the server is getting ready.
-- Username: admin
+- Email: admin@gmail.com
 - Password: 123456
 
 ## Experience Gained
@@ -33,9 +33,9 @@ During the development of the Employee-MS project, I gained valuable experience 
 - Technology Development: Improved skills in both front-end (ReactJS) and back-end (Node.js, Express) development.
 - API Development: Gained experience in building API with RESTful APIs.
 - Data Management: Learned how the data was transported from client to server, stored in database, and back.
-- Authentication: Implemented authentication using JSON Web Tokens (JWT) and refresh tokens.
+- Authentication: Implemented authentication using JSON Web Tokens (JWT), reset token when the password is forgotten, and refresh token. 
 - Input Validation: Validated input data on both client and server side.
-- Deployment: Deploying application on platforms like Vercel, Render, and MongoDB Atlas.
+- Deployment: Deploying applications on Vercel, Render, and MongoDB Atlas platforms.
 - Project Management: Use git to manage & save source code, and roll back when errors occur.
 - Self-Learning: The importance of continuous learning and staying updated with the latest technologies.
 
