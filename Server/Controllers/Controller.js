@@ -50,7 +50,7 @@ const login = async (req, res) => {
         if (!findAdmin) {
             return res.status(401).json({
                 status: "error",
-                message: "Username/password is not correct",
+                message: "Email/password is not correct",
             });
         }
 
@@ -58,7 +58,7 @@ const login = async (req, res) => {
         if (!isTruePassword) {
             return res.status(401).json({
                 status: "error",
-                message: "Username/password is not correct",
+                message: "Email/password is not correct",
             });
         }
 
