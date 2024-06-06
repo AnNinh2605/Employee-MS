@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -13,6 +13,9 @@ const ResetPassword = () => {
 
     const { resetToken } = useParams();
     const validateNoSpaces = validation.validateNoSpaces;
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const HandleResetPassword = async (data) => {
         const { password, confirmPassword } = data;
@@ -48,13 +51,17 @@ const ResetPassword = () => {
                 <hr></hr>
 
                 <form onSubmit={handleSubmit(HandleResetPassword)}>
-                    <div className='form-group'>
+                    {/* hidden input username for User Accessibility that needs to be supported by tool */}
+                    <input type="text" id="username" name="username" aria-label="Tên người dùng" className="visually-hidden" autoComplete="username"/>
+
+                    <div className='form-group position-relative'>
                         <label htmlFor="password" className='form-label'>New password:</label>
                         <input
-                            type="password"
+                            type={showPassword == true ? "text" : "password"}
                             id='password'
                             className='form-control'
                             placeholder="Password"
+                            autoComplete="new-password"
                             {...register("password",
                                 {
                                     required: "Please enter your password",
@@ -67,21 +74,38 @@ const ResetPassword = () => {
                             }
                             onKeyPress={handleKeyPress}
                         />
+                        <div
+                            className='position-absolute top-50 end-0'
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword == true ?
+                                <i className="fa-solid fa-eye text-black pt-2 pe-2"></i> :
+                                <i className="fa-solid fa-eye-slash text-black pt-2 pe-2"></i>}
+                        </div>
                     </div>
                     {errors.password && <small className='text-warning'>{errors.password.message}</small>}
 
-                    <div className='form-group mt-2'>
+                    <div className='form-group mt-2 position-relative'>
                         <label htmlFor="confirmPassword" className='form-label'>Confirm password: </label>
                         <input
-                            type="password"
+                            type={showConfirmPassword == true ? "text" : "password"}
                             id='confirmPassword'
                             className='form-control'
                             placeholder="Confirm password"
+                            autoComplete="new-password"
                             {...register("confirmPassword",
                                 { required: "Please enter again your password", validate: validateNoSpaces })
                             }
                             onKeyPress={handleKeyPress}
                         />
+                        <div
+                            className='position-absolute top-50 end-0'
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            {showConfirmPassword == true ?
+                                <i className="fa-solid fa-eye text-black pt-2 pe-2"></i> :
+                                <i className="fa-solid fa-eye-slash text-black pt-2 pe-2"></i>}
+                        </div>
                     </div>
                     {errors.confirmPassword &&
                         <small className='text-warning'>
