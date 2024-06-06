@@ -20,6 +20,9 @@ const adminSchema = new Schema(
         },
         refreshTokens: {
             type: String
+        },
+        resetTokens: {
+            type: String
         }
     },
 );

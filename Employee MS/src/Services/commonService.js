@@ -12,4 +12,18 @@ const refreshTokenService = () => {
     return axios.post('/refresh-token');
 }
 
-export default { logoutService, loginService, refreshTokenService }
+const forgotPasswordService = (email) => {
+    return axios.post('/password/forgot', email);
+}
+
+const resetPasswordService = (password, resetToken) => {
+    return axios.post('/password/reset', { password: password, resetToken: resetToken });
+}
+
+export default {
+    logoutService,
+    loginService,
+    refreshTokenService,
+    forgotPasswordService,
+    resetPasswordService
+}

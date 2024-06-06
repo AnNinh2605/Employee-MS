@@ -8,7 +8,7 @@ const axiosConfig = () => {
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
         // Do something before request is sent
-        const notContainHeaderUrl = ['/login', '/logout', '/refresh-token'];
+        const notContainHeaderUrl = ['/login', '/logout', '/refresh-token', '/forgot-password', '/reset-password'];
         const url = config.url;
         const isNotContainHeaderUrl = notContainHeaderUrl.some(path => url.includes(path));
 

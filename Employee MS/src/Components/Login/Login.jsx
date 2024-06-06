@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify';
@@ -13,7 +13,6 @@ import validation from '../../utils/validations.js';
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const validateNoSpaces = validation.validateNoSpaces;
@@ -36,7 +35,7 @@ const Login = () => {
     const handleLogin = async (data) => {
         try {
             const responseServer = await commonService.loginService(data);
-            
+
             const token = responseServer.data.data.accessToken;
             const decodedToken = jwtDecode(token);
 
@@ -63,9 +62,16 @@ const Login = () => {
             <div className='p-3 col-10 col-md-6 col-xl-3 border rounded loginForm'>
                 <h2>Login Page</h2>
                 <form onSubmit={handleSubmit(handleLogin)}>
-                    {renderInputField('Username', 'username', 'text', "Username is required")}
+                    {renderInputField('Email', 'email', 'email', "Email is required")}
                     {renderInputField('Password', 'password', 'password', "Password is required")}
-                    <button type="submit" className="btn btn-primary mt-2 w-100">Submit</button>
+                    <button type="submit"
+                        className="btn btn-primary mt-2 w-100 fs-5 fw-bold">
+                        Log in
+                    </button>
+                    <Link to='/forgot-password'
+                        className='d-block text-center mt-2 text-decoration-none'>
+                        Forgot Password?
+                    </Link>
                 </form>
             </div>
         </div>
