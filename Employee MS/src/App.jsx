@@ -7,6 +7,9 @@ import { ToastContainer } from 'react-toastify';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from './Components/Login/Login.jsx';
+import ForgotPassword from './Components/Login/ForgotPassword.jsx';
+import ResetPassword from './Components/Login/ResetPassword.jsx'
+
 import Dashboard from './Components/Dashboard/Dashboard';
 import Home from './Components/Dashboard/Home.jsx';
 import ProtectedRoute from './Components/Dashboard/ProtectedRoute.jsx';
@@ -28,6 +31,8 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Login />} />
+                    <Route path='/forgot-password' element={<ForgotPassword />} />
+                    <Route path='/reset-password/:resetToken' element={<ResetPassword />} />
                     <Route path='/dashboard' element={
                         <ProtectedRoute>
                             <Dashboard />
